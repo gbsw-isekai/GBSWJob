@@ -1,0 +1,9 @@
+
+server:
+  port: 9898
+
+jwt:
+  key: '5580ea43cb40fec3840d132e9939f33ceeba4df2a38c4f9c1521b6cff526cfd0508469c4ab8d4df025851418882d2ca341e4aa982efafe04cb99e63a20b6bf0d'
+=======
+
+>>>>>>> c636bb0a34bc77c67d44b0b0972f8af3e25d339e
