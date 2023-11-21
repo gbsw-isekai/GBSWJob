@@ -3,6 +3,7 @@ package kr.hs.gbsw.gbswjob.auth
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jws
 import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
@@ -25,6 +26,17 @@ class JwtUtils(
         } catch (e: Exception) {
             false
         }
+    }
+
+    fun createJwt(data: Map<String, String>): String {
+
+        val Header = mapOf<String, String>("alg" to "HS512", "typ" to "JWT")
+
+        return Jwts.builder()
+                .setHeader(Header)
+                .setClaims(data)
+                .signWith(SignatureAlgorithm.HS512, key)
+                .compact()
     }
 
     // 사용자 아이디 가져오기

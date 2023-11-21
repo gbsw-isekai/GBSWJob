@@ -3,14 +3,15 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/ranchat?serverTimezone=UTC&characterEncoding=UTF-8
     username: root
-    password: wjdxodid0511!
+    password: 1234
   jpa:
     show-sql: true
     hibernate:
       ddl-auto: update
 
 
-
+server:
+  port: 9898
 
 jwt:
   key: '5580ea43cb40fec3840d132e9939f33ceeba4df2a38c4f9c1521b6cff526cfd0508469c4ab8d4df025851418882d2ca341e4aa982efafe04cb99e63a20b6bf0d'
