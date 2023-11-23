@@ -1,6 +1,5 @@
-package kr.hs.gbsw.gbswjob.auth.authentication.service
+package kr.hs.gbsw.gbswjob.auth.service
 
-import io.jsonwebtoken.Jwts
 import kr.hs.gbsw.gbswjob.auth.JwtUtils
 import kr.hs.gbsw.gbswjob.auth.authentication.IdPwAuthentication
 import org.springframework.security.authentication.AuthenticationManager
@@ -20,11 +19,7 @@ class AuthService(
     fun createJwtToken(authentication: Authentication): String {
         val userId = authentication.principal as String
 
-        //JWT 생성
-
-        var data = mapOf<String, String>("userid" to userId);
-
-        val token = jwtUtils.createJwt(data);
+        val token = jwtUtils.createJwt(userId);
 
         return token
     }
