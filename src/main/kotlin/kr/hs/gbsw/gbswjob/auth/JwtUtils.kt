@@ -28,13 +28,13 @@ class JwtUtils(
         }
     }
 
-    fun createJwt(data: Map<String, String>): String {
+    fun createJwt(userId: String): String {
 
         val Header = mapOf<String, String>("alg" to "HS512", "typ" to "JWT")
 
         return Jwts.builder()
                 .setHeader(Header)
-                .setClaims(data)
+                .setSubject(userId)
                 .signWith(SignatureAlgorithm.HS512, key)
                 .compact()
     }
