@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jws
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.security.core.GrantedAuthority
 import org.springframework.stereotype.Component
 
 
@@ -28,13 +29,13 @@ class JwtUtils(
         }
     }
 
-    fun createJwt(userId: String): String {
-
-        val Header = mapOf<String, String>("alg" to "HS512", "typ" to "JWT")
+    fun createJwt(userId: String, authorities: Collection<GrantedAuthority>): String {
+        val header = mapOf("alg" to "HS512", "typ" to "JWT")
 
         return Jwts.builder()
-                .setHeader(Header)
+                .setHeader(header)
                 .setSubject(userId)
+                .claim("roles", authorities.map { it.authority })
                 .signWith(SignatureAlgorithm.HS512, key)
                 .compact()
     }
@@ -43,11 +44,5 @@ class JwtUtils(
     fun getUserId(token: String): String {
         return parseClaimsJws(token).body.subject
     }
-
-
-
-
-
-
 
 }
