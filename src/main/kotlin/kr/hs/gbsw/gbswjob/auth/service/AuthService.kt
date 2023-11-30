@@ -12,14 +12,15 @@ class AuthService(
         private val jwtUtils: JwtUtils
 ) {
     fun login(id: String, pw: String): String {
-        val result = authenticationManager.authenticate(IdPwAuthentication(id, pw))
+        val result = authenticationManager.authenticate(IdPwAuthentication(id, pw, emptyList()))
         return createJwtToken(result)
     }
 
     fun createJwtToken(authentication: Authentication): String {
         val userId = authentication.principal as String
+        val authorities = authentication.authorities
 
-        val token = jwtUtils.createJwt(userId);
+        val token = jwtUtils.createJwt(userId, authorities)
 
         return token
     }
