@@ -21,7 +21,7 @@ class IdPwAuthenticationProvider(
         val user = repository.findById(id).orElseThrow { EntityNotFoundException("사용자가 없음") }
 
         if (passwordEncoder.matches(rawPassword, user.pw)) {
-            return IdPwAuthentication(id, null)
+            return IdPwAuthentication(id, null, user.generateGrantedAuthorities())
         }
         throw IllegalArgumentException("인증에 실패")
     }
