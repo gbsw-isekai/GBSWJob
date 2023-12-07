@@ -15,21 +15,31 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/companies/{id}")
+@RequestMapping("/companies/{company}/comments")
 class CommentController (
     private var service: CommentService
 ){
-    @PostMapping("/comment")
-    fun create(@AuthUserId userId: String, @PathVariable("id") id:Int,@RequestBody dto: CommentCreateDto): Comment {
+    @PostMapping
+    fun create(@AuthUserId userId: String,
+               @PathVariable("company") id: Int,
+               @RequestBody dto: CommentCreateDto): Comment {
+
         return service.create(userId, id, dto)
     }
 
-    @PutMapping("comment")
-    fun update(@AuthUserId userId: String,  @PathVariable("id") id:Int, @RequestBody dto: CommentUpdateDto): Comment {
-        return service.update(userId, id, dto)
+    @PutMapping("/{id}")
+    fun update(@AuthUserId userId: String,
+               @PathVariable("company") companyId: Int,
+               @PathVariable("id") commentId: Int,
+               @RequestBody dto: CommentUpdateDto,): Comment {
+
+        return service.update(userId, companyId,commentId, dto)
     }
-    @DeleteMapping("comment")
-    fun delete(@AuthUserId userId: String, @PathVariable("id") id:Int, @RequestBody dto: CommentDeleteDto) : Boolean {
-        return service.delete(userId, id, dto)
+    @DeleteMapping("/{id}")
+    fun delete(@AuthUserId userId: String,
+               @PathVariable("company") companyId: Int,
+               @PathVariable("id") commentId: Int) {
+
+        return service.delete(userId, companyId, commentId)
     }
 }

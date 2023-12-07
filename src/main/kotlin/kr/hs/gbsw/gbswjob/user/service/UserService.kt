@@ -1,5 +1,6 @@
 package kr.hs.gbsw.gbswjob.user.service
 
+import kr.hs.gbsw.gbswjob.user.domain.Role
 import kr.hs.gbsw.gbswjob.user.domain.User
 import kr.hs.gbsw.gbswjob.user.repository.RoleRepository
 import kr.hs.gbsw.gbswjob.user.repository.UserRepository
@@ -14,8 +15,12 @@ class UserService(
         private val passwordEncoder: PasswordEncoder
 ) {
     fun register(id: String, pw: String): User {
-        val role = roleRepository.findById("ADMIN").get()
+        val role = roleRepository.findById("USER").orElseGet {
+            roleRepository.save(Role("USER","사용자"))
+        }
+
         val user = User(id, passwordEncoder.encode(pw), mutableListOf(role))
+
         return repository.save(user)
     }
 
