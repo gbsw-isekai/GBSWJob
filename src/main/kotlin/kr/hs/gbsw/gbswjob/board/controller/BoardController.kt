@@ -1,9 +1,11 @@
 package kr.hs.gbsw.gbswjob.board.controller
 
 import kr.hs.gbsw.gbswjob.board.domain.Board
+import kr.hs.gbsw.gbswjob.board.domain.Comment
 import kr.hs.gbsw.gbswjob.board.dto.BoardCreateDto
-import kr.hs.gbsw.gbswjob.board.dto.BoardDeleteDto
 import kr.hs.gbsw.gbswjob.board.dto.BoardUpdateDto
+import kr.hs.gbsw.gbswjob.board.dto.CommentCreateDto
+import kr.hs.gbsw.gbswjob.board.dto.CommentUpdateDto
 import kr.hs.gbsw.gbswjob.board.service.BoardService
 import kr.hs.gbsw.gbswjob.common.AuthUserId
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -16,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/board")
+@RequestMapping("/boards")
 class BoardController(
         private val service: BoardService
 ){
@@ -41,8 +43,23 @@ class BoardController(
         return service.update(userId, dto);
     }
 
-    @DeleteMapping
-    fun delete(@AuthUserId userId: String, @RequestBody dto: BoardDeleteDto): Boolean {
-        return service.delete(userId, dto);
+    @DeleteMapping("/{id}")
+    fun delete(@AuthUserId userId: String, @PathVariable("id") id: Int): Boolean {
+        return service.delete(userId, id);
+    }
+
+    @PostMapping("/{id}/comments")
+    fun createComment(@AuthUserId userId: String, @PathVariable("id") id: Int, @RequestBody dto: CommentCreateDto): Comment {
+        return service.createComment(userId, id, dto)
+    }
+
+    @PutMapping("/comments")
+    fun updateComment(@AuthUserId userId: String, @RequestBody dto: CommentUpdateDto): Comment {
+        return service.updateComment(userId, dto)
+    }
+
+    @DeleteMapping("/comments/{id}")
+    fun deleteComment(@AuthUserId userId: String, @PathVariable("id") id: Int): Boolean {
+        return service.deleteComment(userId, id)
     }
 }

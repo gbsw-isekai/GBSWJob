@@ -11,6 +11,7 @@ class UserService(
         private val repository: UserRepository,
         private val passwordEncoder: PasswordEncoder
 ) {
+
     fun register(id: String, pw: String): User {
         val user = User(id, passwordEncoder.encode(pw), emptyList())
         return repository.save(user)
