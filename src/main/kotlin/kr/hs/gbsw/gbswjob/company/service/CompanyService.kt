@@ -5,6 +5,7 @@ import kr.hs.gbsw.gbswjob.auth.authentication.provider.IdPwAuthenticationProvide
 import kr.hs.gbsw.gbswjob.company.domain.Company
 import kr.hs.gbsw.gbswjob.company.repository.CompanyRepository
 import org.springframework.stereotype.Service
+import java.lang.IllegalArgumentException
 import java.util.*
 
 @Service
@@ -16,8 +17,10 @@ class CompanyService(
         return company;
     }
 
-    fun getCompany(id: Int): Optional<Company> {
-        val company = companyRepository.findById(id)
+    fun getCompany(id: Int): Company {
+        val company = companyRepository.findById(id).orElseThrow{
+            IllegalArgumentException("회사가 존재하지 않습니다")
+        }
         return company;
     }
 }
