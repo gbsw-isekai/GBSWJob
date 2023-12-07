@@ -1,6 +1,7 @@
 package kr.hs.gbsw.gbswjob.user.service
 
 import kr.hs.gbsw.gbswjob.user.domain.User
+import kr.hs.gbsw.gbswjob.user.repository.RoleRepository
 import kr.hs.gbsw.gbswjob.user.repository.UserRepository
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -9,10 +10,12 @@ import java.lang.IllegalArgumentException
 @Service
 class UserService(
         private val repository: UserRepository,
+        private val roleRepository: RoleRepository,
         private val passwordEncoder: PasswordEncoder
 ) {
     fun register(id: String, pw: String): User {
-        val user = User(id, passwordEncoder.encode(pw), emptyList())
+        val role = roleRepository.findById("ADMIN").get()
+        val user = User(id, passwordEncoder.encode(pw), mutableListOf(role))
         return repository.save(user)
     }
 
