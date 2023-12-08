@@ -15,7 +15,7 @@ class User(
         var pw: String,
 
         @ManyToMany
-        var roles: List<Role>
+        var roles: MutableList<Role>
 ) {
         fun generateGrantedAuthorities(): List<GrantedAuthority> {
                 return roles.map {
