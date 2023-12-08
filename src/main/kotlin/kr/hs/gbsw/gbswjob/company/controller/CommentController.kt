@@ -3,7 +3,6 @@ package kr.hs.gbsw.gbswjob.company.controller
 import kr.hs.gbsw.gbswjob.common.AuthUserId
 import kr.hs.gbsw.gbswjob.company.domain.Comment
 import kr.hs.gbsw.gbswjob.company.dto.CommentCreateDto
-import kr.hs.gbsw.gbswjob.company.dto.CommentDeleteDto
 import kr.hs.gbsw.gbswjob.company.dto.CommentUpdateDto
 import kr.hs.gbsw.gbswjob.company.service.CommentService
 import org.springframework.web.bind.annotation.DeleteMapping
