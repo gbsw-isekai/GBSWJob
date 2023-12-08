@@ -22,6 +22,8 @@ class Board(
         var question: Board?,
         @OneToMany(mappedBy = "board")
         var comment: MutableList<Comment>?,
+        @OneToMany(mappedBy = "board")
+        var like: MutableList<BoardLike>?,
         var createdAt: LocalDateTime,
         var updatedAt: LocalDateTime
 ) {
