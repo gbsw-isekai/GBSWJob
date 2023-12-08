@@ -44,7 +44,7 @@ class BoardController(
     }
 
     @DeleteMapping("/{id}")
-    fun delete(@AuthUserId userId: String, @PathVariable("id") id: Int): Boolean {
+    fun delete(@AuthUserId userId: String, @PathVariable("id") id: Int) {
         return service.delete(userId, id);
     }
 
@@ -58,8 +58,8 @@ class BoardController(
         return service.updateComment(userId, dto)
     }
 
-    @DeleteMapping("/comments/{id}")
-    fun deleteComment(@AuthUserId userId: String, @PathVariable("id") id: Int): Boolean {
-        return service.deleteComment(userId, id)
+    @DeleteMapping("/{boardId}/comments/{commentId}")
+    fun deleteComment(@AuthUserId userId: String, @PathVariable("boardId") boardId: Int, @PathVariable("commentId") commentId: Int) {
+        return service.deleteComment(userId, boardId, commentId)
     }
 }
