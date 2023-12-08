@@ -19,13 +19,13 @@ class CommentService(
     private var companyRepository: CompanyRepository,
     private var commentLikeRepository: CommentLikeRepository
 ) {
-    fun create (userId: String, id: Int, dto: CommentCreateDto): Comment {
+    fun create (userId: String, companyId: Int, dto: CommentCreateDto): Comment {
 
         val user = userRepository.findById(userId).orElseThrow {
             IllegalArgumentException("존재하지 않는 사용자입니다.")
         }
 
-        val company = companyRepository.findById(id).orElseThrow {
+        val company = companyRepository.findById(companyId).orElseThrow {
             IllegalArgumentException("존재하지 않는 회사입니다.")
         }
 

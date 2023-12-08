@@ -19,8 +19,8 @@ class CompanyController (
         return service.getCompanies()
     }
 
-    @GetMapping("/{company}")
-    fun getCompany(@PathVariable company: Int): Company {
-        return service.getCompany(company)
+    @GetMapping("/{companyId}")
+    fun getCompany(@PathVariable companyId: Int): Company {
+        return service.getCompany(companyId)
     }
 }

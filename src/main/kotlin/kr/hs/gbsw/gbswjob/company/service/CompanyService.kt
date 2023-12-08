@@ -12,7 +12,7 @@ import java.util.*
 class CompanyService(
     private val companyRepository: CompanyRepository,
 ) {
-    fun getCompanies(): List<Company>{
+    fun getCompanies(): List<Company> {
         val company = companyRepository.findAll();
         return company;
     }

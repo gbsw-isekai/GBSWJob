@@ -14,21 +14,21 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/companies/{company}/comments")
+@RequestMapping("/companies/{companyId}/comments")
 class CommentController (
     private var service: CommentService
 ){
     @PostMapping
     fun create(@AuthUserId userId: String,
-               @PathVariable("company") id: Int,
+               @PathVariable("companyId") companyId: Int,
                @RequestBody dto: CommentCreateDto): Comment {
 
-        return service.create(userId, id, dto)
+        return service.create(userId, companyId, dto)
     }
 
     @PutMapping("/{id}")
     fun update(@AuthUserId userId: String,
-               @PathVariable("company") companyId: Int,
+               @PathVariable("companyId") companyId: Int,
                @PathVariable("id") commentId: Int,
                @RequestBody dto: CommentUpdateDto,): Comment {
 
@@ -36,7 +36,7 @@ class CommentController (
     }
     @DeleteMapping("/{id}")
     fun delete(@AuthUserId userId: String,
-               @PathVariable("company") companyId: Int,
+               @PathVariable("companyId") companyId: Int,
                @PathVariable("id") commentId: Int) {
 
         return service.delete(userId, companyId, commentId)

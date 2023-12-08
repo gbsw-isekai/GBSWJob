@@ -1,31 +1,30 @@
 package kr.hs.gbsw.gbswjob.company.controller
 
 import kr.hs.gbsw.gbswjob.company.domain.CommentLike
-import kr.hs.gbsw.gbswjob.company.dto.CommentLikeDto
 import kr.hs.gbsw.gbswjob.company.service.CommentLikeService
-import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/companies/comments/likes")
+@RequestMapping("/companies/{companyId}/comments/{commentId}/likes")
 class CommentLikeController (
     private var service: CommentLikeService
 ){
     @GetMapping
-    fun likes():List<CommentLike> {
-        return service.getLikes()
+    fun likes(@PathVariable companyId: Int,
+              @PathVariable commentId: Int): List<CommentLike> {
+        return service.getLikes(companyId, commentId)
     }
 
-    @PostMapping("/{like}")
-    fun addLike(@RequestBody dto: CommentLikeDto,
-                @PathVariable like: Int,
-    ): CommentLike{
+    @PostMapping("/me")
+    fun addLike(@PathVariable companyId: Int,
+                @PathVariable commentId: Int ): CommentLike{
 
-        return service.add(dto, like)
+        return service.add(commentId)
     }
 
-    @DeleteMapping("/{like}")
-    fun delete(@PathVariable like: Int) {
-        return service.delete(like)
+    @DeleteMapping("/me")
+    fun delete(@PathVariable companyId: Int,
+               @PathVariable commentId: Int) {
+        return service.delete(commentId)
     }
 }

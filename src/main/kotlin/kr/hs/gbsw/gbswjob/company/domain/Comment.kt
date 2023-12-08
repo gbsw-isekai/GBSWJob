@@ -20,7 +20,8 @@ class Comment(
 
     var content: String,
 
-    @ManyToMany
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "commentLike_id")
     var like: MutableList<CommentLike>,
 
     var createdAt: LocalDateTime,

@@ -16,7 +16,7 @@ class UserService(
 ) {
     fun register(id: String, pw: String): User {
         val role = roleRepository.findById("USER").orElseGet {
-            roleRepository.save(Role("USER","사용자"))
+            roleRepository.save(Role("USER", "사용자"))
         }
 
         val user = User(id, passwordEncoder.encode(pw), mutableListOf(role))
