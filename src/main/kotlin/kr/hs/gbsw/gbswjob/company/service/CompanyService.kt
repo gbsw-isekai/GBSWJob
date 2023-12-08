@@ -18,7 +18,7 @@ class CompanyService(
     }
 
     fun getCompany(companyId: Int): Company {
-        val company = companyRepository.findById(companyId).orElseThrow{
+        val company = companyRepository.findById(companyId).orElseThrow {
             IllegalArgumentException("회사가 존재하지 않습니다")
         }
         return company;
