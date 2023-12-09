@@ -1,11 +1,13 @@
 package kr.hs.gbsw.gbswjob.company.domain
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import kr.hs.gbsw.gbswjob.user.domain.User
 import java.time.LocalDateTime
 
 @Entity
-class Comment(
+@Table(name = "company_comments")
+class CompanyComment(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Int?,
@@ -16,13 +18,14 @@ class Comment(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
+    @JsonIgnore
     var company: Company,
 
+    @Column(columnDefinition = "TEXT")
     var content: String,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "commentLike_id")
-    var like: MutableList<CommentLike>,
+    @OneToMany(mappedBy = "comment")
+    var likes: MutableList<CompanyCommentLike>,
 
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
