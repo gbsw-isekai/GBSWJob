@@ -1,7 +1,6 @@
 package kr.hs.gbsw.gbswjob.board.dto
 
-class CommentUpdateDto(
-        val id: Int,
+class BoardCommentCreateDto(
         val content: String,
 ) {
 }

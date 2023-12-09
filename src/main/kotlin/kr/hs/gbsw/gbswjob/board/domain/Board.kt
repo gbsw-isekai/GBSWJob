@@ -10,7 +10,8 @@ class Board(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         var id: Int?,
-        var title: String,
+        var title: String?,
+        @Column(columnDefinition = "TEXT")
         var content: String,
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "writer_id")
@@ -21,12 +22,19 @@ class Board(
         @ManyToOne(fetch = FetchType.LAZY)
         var question: Board?,
         @OneToMany(mappedBy = "board")
-        var comment: MutableList<Comment>?,
+        var comment: MutableList<BoardComment>?,
         @OneToMany(mappedBy = "board")
         var like: MutableList<BoardLike>?,
         var createdAt: LocalDateTime,
         var updatedAt: LocalDateTime
 ) {
+    fun isAnswer(): Boolean {
+        return question != null
+    }
+
+    fun isQuestion(): Boolean {
+        return question == null
+    }
 }
 
 //class User(

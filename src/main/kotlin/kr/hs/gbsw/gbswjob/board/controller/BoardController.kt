@@ -1,11 +1,9 @@
 package kr.hs.gbsw.gbswjob.board.controller
 
 import kr.hs.gbsw.gbswjob.board.domain.Board
-import kr.hs.gbsw.gbswjob.board.domain.Comment
+import kr.hs.gbsw.gbswjob.board.domain.BoardLike
 import kr.hs.gbsw.gbswjob.board.dto.BoardCreateDto
 import kr.hs.gbsw.gbswjob.board.dto.BoardUpdateDto
-import kr.hs.gbsw.gbswjob.board.dto.CommentCreateDto
-import kr.hs.gbsw.gbswjob.board.dto.CommentUpdateDto
 import kr.hs.gbsw.gbswjob.board.service.BoardService
 import kr.hs.gbsw.gbswjob.common.AuthUserId
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -48,18 +46,13 @@ class BoardController(
         return service.delete(userId, id);
     }
 
-    @PostMapping("/{id}/comments")
-    fun createComment(@AuthUserId userId: String, @PathVariable("id") id: Int, @RequestBody dto: CommentCreateDto): Comment {
-        return service.createComment(userId, id, dto)
+    @PostMapping("/{boardId}/likes/me")
+    fun createLike(@AuthUserId userId: String, @PathVariable("boardId") boardId: Int): BoardLike {
+        return service.createLike(userId, boardId)
     }
 
-    @PutMapping("/comments")
-    fun updateComment(@AuthUserId userId: String, @RequestBody dto: CommentUpdateDto): Comment {
-        return service.updateComment(userId, dto)
-    }
-
-    @DeleteMapping("/{boardId}/comments/{commentId}")
-    fun deleteComment(@AuthUserId userId: String, @PathVariable("boardId") boardId: Int, @PathVariable("commentId") commentId: Int) {
-        return service.deleteComment(userId, boardId, commentId)
+    @DeleteMapping("/{boardId}/likes/me")
+    fun deleteLike(@AuthUserId userId: String, @PathVariable("boardId") boardId: Int) {
+        return service.deleteLike(userId, boardId)
     }
 }
