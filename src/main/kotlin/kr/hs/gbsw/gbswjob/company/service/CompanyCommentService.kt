@@ -1,25 +1,42 @@
 package kr.hs.gbsw.gbswjob.company.service
 
-import kr.hs.gbsw.gbswjob.common.AuthUserId
-import kr.hs.gbsw.gbswjob.company.domain.Comment
+import kr.hs.gbsw.gbswjob.company.domain.CompanyComment
 import kr.hs.gbsw.gbswjob.company.dto.CommentCreateDto
+import kr.hs.gbsw.gbswjob.company.dto.CommentGetDto
 import kr.hs.gbsw.gbswjob.company.dto.CommentUpdateDto
-import kr.hs.gbsw.gbswjob.company.repository.CommentLikeRepository
-import kr.hs.gbsw.gbswjob.company.repository.CommentRepository
+import kr.hs.gbsw.gbswjob.company.repository.CompanyCommentLikeRepository
+import kr.hs.gbsw.gbswjob.company.repository.CompanyCommentRepository
 import kr.hs.gbsw.gbswjob.company.repository.CompanyRepository
 import kr.hs.gbsw.gbswjob.user.repository.UserRepository
 import org.springframework.stereotype.Service
-import java.lang.IllegalArgumentException
 import java.time.LocalDateTime
 
 @Service
-class CommentService(
-    private var commentRepository: CommentRepository,
+class CompanyCommentService(
+    private var companyCommentRepository: CompanyCommentRepository,
     private var userRepository: UserRepository,
     private var companyRepository: CompanyRepository,
-    private var commentLikeRepository: CommentLikeRepository
+    private var companyCommentLikeRepository: CompanyCommentLikeRepository
 ) {
-    fun create (userId: String, companyId: Int, dto: CommentCreateDto): Comment {
+    fun getComments(companyId: Int, userId: String?): List<CommentGetDto> {
+        val company = companyRepository.findById(companyId).orElseThrow {
+            IllegalArgumentException("존재하지 않는 회사입니다.")
+        }
+
+        return companyCommentRepository.findByCompany(company).map {
+            CommentGetDto(
+                it.id!!,
+                it.writer,
+                it.content,
+                it.likes.size,
+                it.likes.any { like -> like.user.id == userId },
+                it.createdAt,
+                it.updatedAt
+            )
+        }
+    }
+
+    fun create (userId: String, companyId: Int, dto: CommentCreateDto): CompanyComment {
 
         val user = userRepository.findById(userId).orElseThrow {
             IllegalArgumentException("존재하지 않는 사용자입니다.")
@@ -29,9 +46,9 @@ class CommentService(
             IllegalArgumentException("존재하지 않는 회사입니다.")
         }
 
-        val like = commentLikeRepository.findAll()
+        val like = companyCommentLikeRepository.findAll()
 
-        val comment = Comment(
+        val comment = CompanyComment(
             null,
             user,
             company,
@@ -40,10 +57,10 @@ class CommentService(
             LocalDateTime.now(),
             LocalDateTime.now()
         )
-        return commentRepository.save(comment)
+        return companyCommentRepository.save(comment)
     }
 
-    fun update (userId: String, companyId: Int, commentId: Int, dto: CommentUpdateDto): Comment {
+    fun update (userId: String, companyId: Int, commentId: Int, dto: CommentUpdateDto): CompanyComment {
 
         val user = userRepository.findById(userId).orElseThrow {
             IllegalArgumentException("존재하지 않는 사용자입니다.")
@@ -53,7 +70,7 @@ class CommentService(
             IllegalArgumentException("존재하지 않는 회사입니다.")
         }
 
-        val updateComment = commentRepository.findById(commentId).orElseThrow {
+        val updateComment = companyCommentRepository.findById(commentId).orElseThrow {
             IllegalArgumentException("존재하지 않는 댓글입니다.")
         }
 
@@ -64,7 +81,7 @@ class CommentService(
         updateComment.content = dto.content
         updateComment.updatedAt = LocalDateTime.now()
 
-        return commentRepository.save(updateComment)
+        return companyCommentRepository.save(updateComment)
     }
 
     fun delete(userId: String, companyId: Int, commentId: Int) {
@@ -77,7 +94,7 @@ class CommentService(
             IllegalArgumentException("존재하지 않는 회사입니다.")
         }
 
-        val comment = commentRepository.findById(commentId).orElseThrow {
+        val comment = companyCommentRepository.findById(commentId).orElseThrow {
             IllegalArgumentException("존재하지 않는 댓글입니다.")
         }
 
@@ -85,7 +102,7 @@ class CommentService(
             throw IllegalArgumentException("자신의 댓글만 삭제할 수 있습니다.")
         }
 
-        commentRepository.deleteById(commentId)
+        companyCommentRepository.deleteById(commentId)
 
         return
     }
