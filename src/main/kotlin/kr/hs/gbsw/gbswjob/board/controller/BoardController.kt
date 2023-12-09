@@ -1,8 +1,8 @@
 package kr.hs.gbsw.gbswjob.board.controller
 
 import kr.hs.gbsw.gbswjob.board.domain.Board
+import kr.hs.gbsw.gbswjob.board.domain.BoardLike
 import kr.hs.gbsw.gbswjob.board.dto.BoardCreateDto
-import kr.hs.gbsw.gbswjob.board.dto.BoardDeleteDto
 import kr.hs.gbsw.gbswjob.board.dto.BoardUpdateDto
 import kr.hs.gbsw.gbswjob.board.service.BoardService
 import kr.hs.gbsw.gbswjob.common.AuthUserId
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/board")
+@RequestMapping("/boards")
 class BoardController(
         private val service: BoardService
 ){
@@ -41,8 +41,18 @@ class BoardController(
         return service.update(userId, dto);
     }
 
-    @DeleteMapping
-    fun delete(@AuthUserId userId: String, @RequestBody dto: BoardDeleteDto): Boolean {
-        return service.delete(userId, dto);
+    @DeleteMapping("/{id}")
+    fun delete(@AuthUserId userId: String, @PathVariable("id") id: Int) {
+        return service.delete(userId, id);
+    }
+
+    @PostMapping("/{boardId}/likes/me")
+    fun createLike(@AuthUserId userId: String, @PathVariable("boardId") boardId: Int): BoardLike {
+        return service.createLike(userId, boardId)
+    }
+
+    @DeleteMapping("/{boardId}/likes/me")
+    fun deleteLike(@AuthUserId userId: String, @PathVariable("boardId") boardId: Int) {
+        return service.deleteLike(userId, boardId)
     }
 }

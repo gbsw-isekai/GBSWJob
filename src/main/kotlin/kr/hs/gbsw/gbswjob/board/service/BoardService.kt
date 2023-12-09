@@ -1,10 +1,13 @@
 package kr.hs.gbsw.gbswjob.board.service
 
 import kr.hs.gbsw.gbswjob.board.domain.Board
+import kr.hs.gbsw.gbswjob.board.domain.BoardLike
 import kr.hs.gbsw.gbswjob.board.dto.BoardCreateDto
-import kr.hs.gbsw.gbswjob.board.dto.BoardDeleteDto
 import kr.hs.gbsw.gbswjob.board.dto.BoardUpdateDto
+import kr.hs.gbsw.gbswjob.board.repository.BoardLikeRepository
 import kr.hs.gbsw.gbswjob.board.repository.BoardRepository
+import kr.hs.gbsw.gbswjob.board.repository.BoardCommentRepository
+import kr.hs.gbsw.gbswjob.user.domain.User
 import kr.hs.gbsw.gbswjob.user.repository.UserRepository
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -12,36 +15,83 @@ import java.time.LocalDateTime
 @Service
 class BoardService(
         private val repository: BoardRepository,
-        private val userRepository: UserRepository
+        private val userRepository: UserRepository,
+        private val commentRepository: BoardCommentRepository,
+        private val boardLikeRepository: BoardLikeRepository
 ) {
 
     fun getAll(): List<Board> {
-        val boards = repository.findAll();
+        val boards = repository.findAll()
 
-        return boards;
+        return boards
     }
 
     fun getById(id: Int): Board {
-        val board = repository.findById(id).get();
-
-        return board;
-    }
-
-    fun create(userId: String, dto: BoardCreateDto): Board {
-
-        val user = userRepository.findById(userId).orElseThrow {
-            IllegalArgumentException("존재하지 않는 사용자 입니다.")
+        val board = repository.findById(id).orElseThrow {
+            IllegalArgumentException("존재하지 않는 게시글 입니다.")
         }
 
-        val board = Board(
+        return board
+    }
+
+    fun createAnswer(user: User, dto: BoardCreateDto): Board {
+        // 1. 질문글을 불러온다.
+        val question = repository.findById(dto.questionId!!).orElseThrow {
+            IllegalArgumentException("존재하지 않는 게시글 입니다.")
+        }
+
+        if (question.isAnswer()) {
+            throw IllegalStateException("답변 글에 답변을 추가할 수 없습니다.")
+        }
+
+        // 2. 답변글을 저장한다.
+        val answer = Board(
+                null,
+                null,
+                dto.content,
+                user,
+                null,
+                question,
+                null,
+                null,
+                LocalDateTime.now(),
+                LocalDateTime.now()
+        )
+
+        repository.save(answer)
+        repository.save(question)
+
+        return answer
+    }
+
+    fun createQuestion(user: User, dto: BoardCreateDto): Board {
+        val question = Board(
                 null,
                 dto.title,
                 dto.content,
                 user,
+                null,
+                null,
+                null,
+                null,
                 LocalDateTime.now(),
-                LocalDateTime.now()
+                LocalDateTime.now(),
         )
-        return repository.save(board)
+        return repository.save(question)
+    }
+
+    fun create(userId: String, dto: BoardCreateDto): Board {
+        val user = userRepository.findById(userId).orElseThrow {
+            IllegalArgumentException("존재하지 않는 사용자 입니다.")
+        }
+
+        // 목표 : 질문 글, 답변 글을 구분해서 등록할 수 있따.
+        // questionId 가 있다면 답변 글
+        if (dto.questionId != null) {
+            return createAnswer(user, dto)
+        }
+
+        return createQuestion(user, dto)
     }
 
     fun update(userId: String, dto: BoardUpdateDto): Board {
@@ -50,35 +100,77 @@ class BoardService(
             IllegalArgumentException("존재하지 않는 사용자 입니다.")
         }
 
-        val updatedBoard = repository.findById(dto.id).get();
+        val updatedBoard = repository.findById(dto.id).get()
 
-        if(user != updatedBoard.writer) {
+        if(updatedBoard.writer != user) {
             throw IllegalStateException("자신의 글만 업데이트할 수 있습니다.")
         }
 
-        updatedBoard.title = dto.title;
-        updatedBoard.content = dto.title;
+        updatedBoard.title = dto.title
+        updatedBoard.content = dto.content
         updatedBoard.updatedAt = LocalDateTime.now()
 
-        return repository.save(updatedBoard);
+        return repository.save(updatedBoard)
     }
 
-    fun delete(userId: String, dto: BoardDeleteDto): Boolean {
+    fun delete(userId: String, id: Int) {
 
         val user = userRepository.findById(userId).orElseThrow {
             IllegalArgumentException("존재하지 않는 사용자 입니다.")
         }
 
-        val board = repository.findById(dto.id).orElseThrow {
+        val board = repository.findById(id).orElseThrow {
             IllegalArgumentException("존재하지 않는 게시글 입니다.")
-        };
+        }
 
-        if(user != board.writer) {
+        if(board.writer != user) {
             throw IllegalStateException("자신의 글만 삭제할 수 있습니다.")
         }
 
-        repository.delete(board);
+        repository.delete(board)
 
-        return true;
+        return
+    }
+
+    fun createLike(userId: String, boardId: Int): BoardLike {
+        val user = userRepository.findById(userId).orElseThrow {
+            IllegalArgumentException("존재하지 않는 사용자 입니다.")
+        }
+
+        val board = repository.findById(boardId).orElseThrow {
+            IllegalArgumentException("존재하지 않는 게시글 입니다.")
+        }
+
+        val Like = BoardLike(
+                null,
+                user,
+                board
+        )
+
+        if (!board.like.isNullOrEmpty() && boardLikeRepository.existsByUserAndBoard(user, board)) {
+            throw IllegalStateException("이미 좋아요를 누른 게시글 입니다.")
+        }
+
+        return boardLikeRepository.save(Like)
+    }
+
+    fun deleteLike(userId: String, boardId: Int) {
+        val user = userRepository.findById(userId).orElseThrow {
+            IllegalArgumentException("존재하지 않는 사용자 입니다.")
+        }
+
+        val board = repository.findById(boardId).orElseThrow {
+            IllegalArgumentException("존재하지 않는 게시글 입니다.")
+        }
+
+        if (board.like.isNullOrEmpty() || !boardLikeRepository.existsByUserAndBoard(user, board)) {
+            throw IllegalStateException("좋아요를 누르지 않았습니다.")
+        }
+
+        val like = boardLikeRepository.getByUserAndBoard(user, board)
+
+        boardLikeRepository.delete(like)
+
+        return
     }
 }

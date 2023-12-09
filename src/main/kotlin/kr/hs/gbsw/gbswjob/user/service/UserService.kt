@@ -14,6 +14,7 @@ class UserService(
         private val roleRepository: RoleRepository,
         private val passwordEncoder: PasswordEncoder
 ) {
+
     fun register(id: String, pw: String): User {
         val role = roleRepository.findById("USER").orElseGet {
             roleRepository.save(Role("USER", "사용자"))
@@ -29,4 +30,5 @@ class UserService(
             IllegalArgumentException("존재하지 않는 사용자 입니다.")
         }
     }
+
 }
