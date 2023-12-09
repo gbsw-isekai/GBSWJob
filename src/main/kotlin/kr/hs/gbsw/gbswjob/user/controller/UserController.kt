@@ -1,5 +1,6 @@
 package kr.hs.gbsw.gbswjob.user.controller
 
+import kr.hs.gbsw.gbswjob.common.AuthUserId
 import kr.hs.gbsw.gbswjob.user.domain.User
 import kr.hs.gbsw.gbswjob.user.dto.UserRegisterDto
 import kr.hs.gbsw.gbswjob.user.service.UserService
@@ -20,8 +21,8 @@ class UserController(
         return service.register(dto.id, dto.pw)
     }
 
-    @GetMapping("/{id}")
-    fun getUser(@PathVariable id:String): User {
-        return service.getUser(id)
+    @GetMapping("/me")
+    fun getMyAccount(@AuthUserId userId: String): User {
+        return service.getUser(userId)
     }
 }
