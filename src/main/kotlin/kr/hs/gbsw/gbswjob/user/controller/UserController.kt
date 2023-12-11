@@ -42,7 +42,7 @@ class UserController(
 
     //test를 위한 유저 조회
     @GetMapping
-    fun users(): List<User> {
-        return service.getUsers()
+    fun users(@AuthUserId user: User): List<User> {
+        return service.getUsers(user)
     }
 }
