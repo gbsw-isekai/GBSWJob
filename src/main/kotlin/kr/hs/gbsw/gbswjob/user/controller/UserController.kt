@@ -25,9 +25,24 @@ class UserController(
     ): User {
         return service.register(userId, dto.id, dto.pw, dto.name, dto.number, dto.profile)
     }
-
+//개인 프로필
     @GetMapping("/me")
     fun getMyAccount(@AuthUserId userId: String): User {
         return service.getUser(userId)
+    }
+//개인 정보 수정
+    @PutMapping("/me/edit")
+    fun userUpdate(
+        @RequestBody dto: UserUpdateDto,
+        @AuthUserId userId: String
+    ): User {
+        return service.updateUser(dto, userId)
+    }
+
+
+    //test를 위한 유저 조회
+    @GetMapping
+    fun users(): List<User> {
+        return service.getUsers()
     }
 }
