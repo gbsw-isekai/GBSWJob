@@ -1,5 +1,6 @@
 package kr.hs.gbsw.gbswjob.user.controller
 
+import jakarta.annotation.security.RolesAllowed
 import kr.hs.gbsw.gbswjob.common.AuthUserId
 import kr.hs.gbsw.gbswjob.user.domain.User
 import kr.hs.gbsw.gbswjob.user.dto.UserRegisterDto
@@ -21,9 +22,9 @@ class UserController(
     @PostMapping("/join")
     fun register(
         @RequestBody dto: UserRegisterDto,
-        @AuthUserId userId: String
+        @AuthUserId userId: String?
     ): User {
-        return service.register(userId, dto.id, dto.pw, dto.name, dto.number, dto.profile)
+        return service.register(userId.toString(), dto.id, dto.pw, dto.name, dto.number, dto.profile)
     }
 //개인 프로필
     @GetMapping("/me")
