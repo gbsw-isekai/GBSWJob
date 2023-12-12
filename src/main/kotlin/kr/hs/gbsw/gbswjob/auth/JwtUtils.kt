@@ -45,4 +45,7 @@ class JwtUtils(
         return parseClaimsJws(token).body.subject
     }
 
+    fun getRoles(token: String): List<String> {
+        return parseClaimsJws(token).body.get("roles", List::class.java) as List<String>
+    }
 }
