@@ -43,7 +43,8 @@ class UserController(
 
     //test를 위한 유저 조회
     @GetMapping
-    fun users(@AuthUserId user: User): List<User> {
-        return service.getUsers(user)
+    @RolesAllowed(value = ["ADMIN"])
+    fun users(): List<User> {
+        return service.getUsers()
     }
 }
