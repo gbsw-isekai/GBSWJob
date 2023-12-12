@@ -67,10 +67,7 @@ class UserService(
         }
     }
 
-    fun getUsers(user: User): List<User> {
-        if (!user.roles.equals("admin")) {
-            throw IllegalArgumentException("권한이 없습니다.")
-        }
+    fun getUsers(): List<User> {
         return repository.findAll()
     }
 }
