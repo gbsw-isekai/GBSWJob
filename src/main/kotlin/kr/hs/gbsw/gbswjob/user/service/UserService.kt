@@ -19,8 +19,12 @@ class UserService(
             roleRepository.save(Role("USER", "사용자"))
         }
 
-        if (repository.findById(userId).isEmpty.not()) {
+        if (!repository.findById(userId).isEmpty) {
             throw IllegalArgumentException("이미 로그인이 되어 있습니다.")
+        }
+
+        if (!repository.findById(id).isEmpty) {
+            throw IllegalArgumentException("이미 "+ id + "라는 유저가 존재합니다.")
         }
 
         var userProfile = profile
