@@ -20,8 +20,6 @@ class AuthService(
         val userId = authentication.principal as String
         val authorities = authentication.authorities
 
-        val token = jwtUtils.createJwt(userId, authorities)
-
-        return token
+        return jwtUtils.createJwt(userId, authorities) //token
     }
 }
