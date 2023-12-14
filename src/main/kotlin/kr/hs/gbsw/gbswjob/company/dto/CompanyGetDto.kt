@@ -2,6 +2,7 @@ package kr.hs.gbsw.gbswjob.company.dto
 
 import kr.hs.gbsw.gbswjob.company.domain.CompanyComment
 import kr.hs.gbsw.gbswjob.company.domain.CompanyReview
+import kr.hs.gbsw.gbswjob.company.domain.CompanyViews
 
 class CompanyGetDto(
     var id: Int?,
@@ -10,7 +11,8 @@ class CompanyGetDto(
     var grade: Double,
     var averageSalary: Int,
     var comments: MutableList<CompanyComment>?,
-    var reviews: MutableList<CompanyReview>?
+    var reviews: MutableList<CompanyReview>?,
+    var viewsCount: Long
 ) {
 }
 
