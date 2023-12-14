@@ -2,11 +2,12 @@ package kr.hs.gbsw.gbswjob.board.service
 
 import kr.hs.gbsw.gbswjob.board.domain.Board
 import kr.hs.gbsw.gbswjob.board.domain.BoardLike
+import kr.hs.gbsw.gbswjob.board.domain.BoardView
 import kr.hs.gbsw.gbswjob.board.dto.BoardCreateDto
 import kr.hs.gbsw.gbswjob.board.dto.BoardUpdateDto
 import kr.hs.gbsw.gbswjob.board.repository.BoardLikeRepository
 import kr.hs.gbsw.gbswjob.board.repository.BoardRepository
-import kr.hs.gbsw.gbswjob.board.repository.BoardCommentRepository
+import kr.hs.gbsw.gbswjob.board.repository.BoardViewRepository
 import kr.hs.gbsw.gbswjob.user.domain.User
 import kr.hs.gbsw.gbswjob.user.repository.UserRepository
 import org.springframework.stereotype.Service
@@ -16,8 +17,8 @@ import java.time.LocalDateTime
 class BoardService(
         private val repository: BoardRepository,
         private val userRepository: UserRepository,
-        private val commentRepository: BoardCommentRepository,
-        private val boardLikeRepository: BoardLikeRepository
+        private val likeRepository: BoardLikeRepository,
+        private val viewRepository: BoardViewRepository
 ) {
 
     fun getAll(): List<Board> {
@@ -54,6 +55,8 @@ class BoardService(
                 question,
                 null,
                 null,
+                null,
+                0,
                 LocalDateTime.now(),
                 LocalDateTime.now()
         )
@@ -74,6 +77,8 @@ class BoardService(
                 null,
                 null,
                 null,
+                null,
+                0,
                 LocalDateTime.now(),
                 LocalDateTime.now(),
         )
@@ -147,11 +152,11 @@ class BoardService(
                 board
         )
 
-        if (!board.like.isNullOrEmpty() && boardLikeRepository.existsByUserAndBoard(user, board)) {
+        if (!board.like.isNullOrEmpty() && likeRepository.existsByUserAndBoard(user, board)) {
             throw IllegalStateException("이미 좋아요를 누른 게시글 입니다.")
         }
 
-        return boardLikeRepository.save(Like)
+        return likeRepository.save(Like)
     }
 
     fun deleteLike(userId: String, boardId: Int) {
@@ -163,14 +168,42 @@ class BoardService(
             IllegalArgumentException("존재하지 않는 게시글 입니다.")
         }
 
-        if (board.like.isNullOrEmpty() || !boardLikeRepository.existsByUserAndBoard(user, board)) {
+        if (board.like.isNullOrEmpty() || !likeRepository.existsByUserAndBoard(user, board)) {
             throw IllegalStateException("좋아요를 누르지 않았습니다.")
         }
 
-        val like = boardLikeRepository.getByUserAndBoard(user, board)
+        val like = likeRepository.getByUserAndBoard(user, board)
 
-        boardLikeRepository.delete(like)
+        likeRepository.delete(like)
 
         return
+    }
+
+    fun createView(userId: String?, boardId: Int) {
+
+        var user: User? = null
+
+        if (!userId.isNullOrEmpty()) {
+            user = userRepository.findById(userId).orElseThrow {
+                IllegalArgumentException("존재하지 않는 사용자 입니다.")
+            }
+        }
+
+
+        val board = repository.findById(boardId).orElseThrow {
+            IllegalArgumentException("존재하지 않는 게시글 입니다.")
+        }
+
+        val view = BoardView(
+                null,
+                user,
+                board
+        )
+
+        board.viewCount++
+
+        viewRepository.save(view)
+        repository.save(board)
+
     }
 }
