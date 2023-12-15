@@ -2,6 +2,7 @@ package kr.hs.gbsw.gbswjob.user.service
 
 import kr.hs.gbsw.gbswjob.user.domain.Role
 import kr.hs.gbsw.gbswjob.user.domain.User
+import kr.hs.gbsw.gbswjob.user.dto.UserRegisterDto
 import kr.hs.gbsw.gbswjob.user.dto.UserUpdateDto
 import kr.hs.gbsw.gbswjob.user.repository.RoleRepository
 import kr.hs.gbsw.gbswjob.user.repository.UserRepository
@@ -14,31 +15,27 @@ class UserService(
         private val roleRepository: RoleRepository,
         private val passwordEncoder: PasswordEncoder
 ) {
-    fun register(userId: String, id: String, pw: String, name: String, number: String, profile: String): User {
+    companion object {
+        const val PROFILE = "https://picpac.kr/common/img/default_profile.png"
+    }
+    fun register(dto: UserRegisterDto): User {
         val role = roleRepository.findById("USER").orElseGet {
             roleRepository.save(Role("USER", "사용자"))
         }
 
-        if (!repository.findById(userId).isEmpty) {
-            throw IllegalArgumentException("이미 로그인이 되어 있습니다.")
-        }
-
-        if (!repository.findById(id).isEmpty) {
-            throw IllegalArgumentException("이미 "+ id + "라는 유저가 존재합니다.")
-        }
-
-        var userProfile = profile
-
-        if (userProfile.isEmpty()) {
-            userProfile = "https://picpac.kr/common/img/default_profile.png"
+        if (!repository.existsById(dto.id)) {
+            throw IllegalArgumentException("이미 "+ dto.id + "라는 유저가 존재합니다.")
         }
 
         val user = User(
-            id,
-            passwordEncoder.encode(pw),
-            name,
-            userProfile,
-            number,
+            dto.id,
+            passwordEncoder.encode(dto.pw),
+            dto.name,
+            //프로필 여부 확인
+            dto.profile.ifEmpty {
+                PROFILE
+            },
+            dto.number,
             mutableListOf(role)
         )
 
@@ -50,12 +47,10 @@ class UserService(
             IllegalArgumentException("유저가 존재하지 않습니다.")
         }
 
-        if (dto.profile.isEmpty()) {
-            dto.profile = "https://picpac.kr/common/img/default_profile.png"
-        }
-
         user.name = dto.name
-        user.profile = dto.profile
+        user.profile = dto.profile.ifEmpty {
+            PROFILE
+        }
         user.pw = dto.pw
 
         return repository.save(user)
