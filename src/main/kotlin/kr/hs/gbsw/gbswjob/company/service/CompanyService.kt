@@ -1,7 +1,7 @@
 package kr.hs.gbsw.gbswjob.company.service
 
 import kr.hs.gbsw.gbswjob.company.domain.Company
-import kr.hs.gbsw.gbswjob.company.domain.CompanyViews
+import kr.hs.gbsw.gbswjob.company.domain.CompanyView
 import kr.hs.gbsw.gbswjob.company.dto.CompanyGetDto
 import kr.hs.gbsw.gbswjob.company.dto.CreateCompanyDto
 import kr.hs.gbsw.gbswjob.company.repository.CompanyRepository
@@ -40,7 +40,7 @@ class CompanyService(
                 it.averageSalary,
                 it.comments,
                 it.reviews,
-                0
+                it.viewCount
             )
         }
         return company;
@@ -58,11 +58,11 @@ class CompanyService(
         }
 
         val user = userId?.let {
-            repository.findById(userId)
+            repository.findById(it)
             null
         }
 
-        val views = CompanyViews(
+        val views = CompanyView(
             null,
             user,
             company
