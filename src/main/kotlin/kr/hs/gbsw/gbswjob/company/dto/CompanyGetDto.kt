@@ -2,7 +2,6 @@ package kr.hs.gbsw.gbswjob.company.dto
 
 import kr.hs.gbsw.gbswjob.company.domain.CompanyComment
 import kr.hs.gbsw.gbswjob.company.domain.CompanyReview
-import kr.hs.gbsw.gbswjob.company.domain.CompanyViews
 
 class CompanyGetDto(
     var id: Int?,
