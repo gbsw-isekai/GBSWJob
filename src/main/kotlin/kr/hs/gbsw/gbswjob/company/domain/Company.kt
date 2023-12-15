@@ -17,7 +17,11 @@ class Company(
     @OneToMany(mappedBy = "company")
     var comments: MutableList<CompanyComment>?,
     @OneToMany(mappedBy = "company")
-    var reviews: MutableList<CompanyReview>?
+    var reviews: MutableList<CompanyReview>?,
+    @JsonIgnore
+    @OneToMany(mappedBy = "company")
+    var views: MutableList<CompanyView>?,
+    var viewCount: Long
 ) {
     fun calculateAverageRating(): Double {
         if (reviews.isNullOrEmpty()) {

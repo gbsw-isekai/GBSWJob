@@ -10,9 +10,12 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 @Entity
 class User(
         @Id
-        var id: String,
+        var id: String, //사용자 id
         @JsonIgnore
-        var pw: String,
+        var pw: String, // 사용자 비밀번호
+        var name: String, // 사용자 이름
+        var number: String, //사용자 전화번호
+        var profile: String, //사용자 프로필
 
         @ManyToMany
         var roles: MutableList<Role>

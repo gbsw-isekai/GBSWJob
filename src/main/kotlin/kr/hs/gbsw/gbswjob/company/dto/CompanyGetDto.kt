@@ -10,7 +10,8 @@ class CompanyGetDto(
     var grade: Double,
     var averageSalary: Int,
     var comments: MutableList<CompanyComment>?,
-    var reviews: MutableList<CompanyReview>?
+    var reviews: MutableList<CompanyReview>?,
+    var viewsCount: Long
 ) {
 }
 
