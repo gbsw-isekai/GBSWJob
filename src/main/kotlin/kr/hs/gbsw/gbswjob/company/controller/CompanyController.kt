@@ -1,6 +1,5 @@
 package kr.hs.gbsw.gbswjob.company.controller
 
-import com.sun.net.httpserver.Authenticator.Success
 import kr.hs.gbsw.gbswjob.common.AuthUserId
 import kr.hs.gbsw.gbswjob.company.domain.Company
 import kr.hs.gbsw.gbswjob.company.dto.CompanyGetDto
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import kotlin.reflect.jvm.internal.impl.util.CheckResult.SuccessCheck
 
 @RestController
 @RequestMapping("/companies")
@@ -38,7 +36,7 @@ class CompanyController(
     }
 
     //회사 조회수 추가
-    @PostMapping("/{companyId}/record")
+    @PostMapping("/{companyId}/views")
     fun countUp(
         @PathVariable companyId: Int,
         @AuthUserId userId: String?,
