@@ -4,7 +4,7 @@ import jakarta.persistence.*
 import kr.hs.gbsw.gbswjob.user.domain.User
 
 @Entity
-class CompanyViews(
+class CompanyView(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Int?,
