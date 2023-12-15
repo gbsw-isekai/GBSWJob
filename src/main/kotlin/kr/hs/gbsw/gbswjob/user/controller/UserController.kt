@@ -5,6 +5,7 @@ import kr.hs.gbsw.gbswjob.common.AuthUserId
 import kr.hs.gbsw.gbswjob.user.domain.User
 import kr.hs.gbsw.gbswjob.user.dto.UserRegisterDto
 import kr.hs.gbsw.gbswjob.user.dto.UserUpdateDto
+import kr.hs.gbsw.gbswjob.user.repository.UserRepository
 import kr.hs.gbsw.gbswjob.user.service.UserService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -16,7 +17,8 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/users")
 class UserController(
-        private val service: UserService
+    private val service: UserService,
+    private val repository: UserRepository
 ) {
     // 회원 가입
     @PostMapping("/join")
@@ -24,7 +26,10 @@ class UserController(
         @RequestBody dto: UserRegisterDto,
         @AuthUserId userId: String?
     ): User {
-        return service.register(userId.toString(), dto.id, dto.pw, dto.name, dto.number, dto.profile)
+        if (!repository.existsById(userId.toString())) {
+            throw IllegalArgumentException("이미 로그인이 되어 있습니다.")
+        }
+        return service.register(dto)
     }
 //개인 프로필
     @GetMapping("/me")
