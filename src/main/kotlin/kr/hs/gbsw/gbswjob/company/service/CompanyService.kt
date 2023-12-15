@@ -5,7 +5,6 @@ import kr.hs.gbsw.gbswjob.company.domain.CompanyViews
 import kr.hs.gbsw.gbswjob.company.dto.CompanyGetDto
 import kr.hs.gbsw.gbswjob.company.dto.CreateCompanyDto
 import kr.hs.gbsw.gbswjob.company.repository.CompanyRepository
-import kr.hs.gbsw.gbswjob.company.repository.CompanyReviewRepository
 import kr.hs.gbsw.gbswjob.company.repository.CompanyViewsRepository
 import kr.hs.gbsw.gbswjob.user.repository.UserRepository
 import org.springframework.stereotype.Service
