@@ -37,7 +37,7 @@ class User(
 
     fun generateGrantedAuthorities(): List<GrantedAuthority> {
             return roles.map {
-                    SimpleGrantedAuthority(it.id)
+                    SimpleGrantedAuthority("ROLE_${it.id}")
             }
     }
 }
