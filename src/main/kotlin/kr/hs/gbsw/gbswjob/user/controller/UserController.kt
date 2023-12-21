@@ -7,6 +7,7 @@ import kr.hs.gbsw.gbswjob.user.dto.UserRegisterDto
 import kr.hs.gbsw.gbswjob.user.dto.UserUpdateDto
 import kr.hs.gbsw.gbswjob.user.repository.UserRepository
 import kr.hs.gbsw.gbswjob.user.service.UserService
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -48,7 +49,7 @@ class UserController(
 
     //test를 위한 유저 조회
     @GetMapping
-    @RolesAllowed(value = ["ADMIN"])
+    @PreAuthorize("hasRole('ADMIN')")
     fun users(): List<User> {
         return service.getUsers()
     }

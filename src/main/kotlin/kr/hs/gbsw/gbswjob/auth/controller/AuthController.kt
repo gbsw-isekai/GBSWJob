@@ -14,6 +14,6 @@ class AuthController(
 ) {
     @PostMapping("/login")
     fun login(@RequestBody dto: LoginDto): String {
-        return service.login(dto.id, dto.pw)
+        return service.login(dto)
     }
 }
