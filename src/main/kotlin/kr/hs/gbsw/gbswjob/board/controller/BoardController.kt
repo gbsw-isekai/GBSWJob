@@ -55,4 +55,9 @@ class BoardController(
     fun deleteLike(@AuthUserId userId: String, @PathVariable("boardId") boardId: Int) {
         return service.deleteLike(userId, boardId)
     }
+
+    @PostMapping("/{boardId}/views")
+    fun createView(@AuthUserId userId: String?, @PathVariable("boardId") boardId: Int) {
+        return service.createView(userId, boardId)
+    }
 }
