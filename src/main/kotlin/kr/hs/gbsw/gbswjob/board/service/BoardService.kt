@@ -4,6 +4,7 @@ import kr.hs.gbsw.gbswjob.board.domain.Board
 import kr.hs.gbsw.gbswjob.board.domain.BoardLike
 import kr.hs.gbsw.gbswjob.board.domain.BoardView
 import kr.hs.gbsw.gbswjob.board.dto.BoardCreateDto
+import kr.hs.gbsw.gbswjob.board.projection.BoardQuestionProjection
 import kr.hs.gbsw.gbswjob.board.dto.BoardUpdateDto
 import kr.hs.gbsw.gbswjob.board.repository.BoardLikeRepository
 import kr.hs.gbsw.gbswjob.board.repository.BoardRepository
@@ -205,5 +206,9 @@ class BoardService(
         viewRepository.save(view)
         repository.save(board)
 
+    }
+
+    fun getQuestions(): List<BoardQuestionProjection> {
+        return repository.findByQuestionIdIsNull();
     }
 }

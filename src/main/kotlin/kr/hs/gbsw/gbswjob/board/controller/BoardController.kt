@@ -3,6 +3,7 @@ package kr.hs.gbsw.gbswjob.board.controller
 import kr.hs.gbsw.gbswjob.board.domain.Board
 import kr.hs.gbsw.gbswjob.board.domain.BoardLike
 import kr.hs.gbsw.gbswjob.board.dto.BoardCreateDto
+import kr.hs.gbsw.gbswjob.board.projection.BoardQuestionProjection
 import kr.hs.gbsw.gbswjob.board.dto.BoardUpdateDto
 import kr.hs.gbsw.gbswjob.board.service.BoardService
 import kr.hs.gbsw.gbswjob.common.AuthUserId
@@ -20,10 +21,14 @@ import org.springframework.web.bind.annotation.RestController
 class BoardController(
         private val service: BoardService
 ){
-
     @GetMapping
     fun getAll(): List<Board> {
         return service.getAll();
+    }
+
+    @GetMapping("/questions")
+    fun getQuestions(): List<BoardQuestionProjection> {
+        return service.getQuestions();
     }
 
     @GetMapping("/{id}")
