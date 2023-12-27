@@ -2,6 +2,7 @@ package kr.hs.gbsw.gbswjob.auth.service
 
 import kr.hs.gbsw.gbswjob.auth.JwtUtils
 import kr.hs.gbsw.gbswjob.auth.authentication.IdPwAuthentication
+import kr.hs.gbsw.gbswjob.auth.authentication.dto.LoginDto
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
@@ -11,8 +12,8 @@ class AuthService(
         private val authenticationManager: AuthenticationManager,
         private val jwtUtils: JwtUtils
 ) {
-    fun login(id: String, pw: String): String {
-        val result = authenticationManager.authenticate(IdPwAuthentication(id, pw, emptyList()))
+    fun login(dto: LoginDto): String {
+        val result = authenticationManager.authenticate(IdPwAuthentication(dto.id, dto.pw, emptyList()))
         return createJwtToken(result)
     }
 
@@ -20,8 +21,6 @@ class AuthService(
         val userId = authentication.principal as String
         val authorities = authentication.authorities
 
-        val token = jwtUtils.createJwt(userId, authorities)
-
-        return token
+        return jwtUtils.createJwt(userId, authorities) //token
     }
 }
