@@ -23,7 +23,7 @@ class UserService(
             roleRepository.save(Role("USER", "사용자"))
         }
 
-        if (!repository.existsById(dto.id)) {
+        if (repository.existsById(dto.id)) {
             throw IllegalArgumentException("이미 "+ dto.id + "라는 유저가 존재합니다.")
         }
 
@@ -32,10 +32,10 @@ class UserService(
             passwordEncoder.encode(dto.pw),
             dto.name,
             //프로필 여부 확인
-            dto.profile.ifEmpty {
+            dto.number,
+            dto.profile!!.ifEmpty {
                 PROFILE
             },
-            dto.number,
             mutableListOf(role)
         )
 
