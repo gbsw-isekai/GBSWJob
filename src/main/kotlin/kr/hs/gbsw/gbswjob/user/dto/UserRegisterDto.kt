@@ -5,6 +5,6 @@ class UserRegisterDto(
         var pw: String,
         var name: String,
         var number: String,
-        var profile: String
+        var profile: String?
 ) {
 }
