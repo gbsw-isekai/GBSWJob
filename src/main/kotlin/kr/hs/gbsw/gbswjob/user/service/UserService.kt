@@ -23,7 +23,7 @@ class UserService(
             roleRepository.save(Role("USER", "사용자"))
         }
 
-        if (!repository.existsById(dto.id)) {
+        if (repository.existsById(dto.id)) {
             throw IllegalArgumentException("이미 "+ dto.id + "라는 유저가 존재합니다.")
         }
 
