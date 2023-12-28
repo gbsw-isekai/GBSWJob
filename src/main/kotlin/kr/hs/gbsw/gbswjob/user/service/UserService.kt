@@ -32,10 +32,10 @@ class UserService(
             passwordEncoder.encode(dto.pw),
             dto.name,
             //프로필 여부 확인
-            dto.profile.ifEmpty {
+            dto.number,
+            dto.profile!!.ifEmpty {
                 PROFILE
             },
-            dto.number,
             mutableListOf(role)
         )
 
