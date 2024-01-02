@@ -17,11 +17,11 @@ import org.springframework.stereotype.Service
 
 @Service
 class AuthService(
-    private val repository: UserRepository,
     private val authenticationManager: AuthenticationManager,
     private val roleRepository: RoleRepository,
     private val passwordEncoder: PasswordEncoder,
-    private val jwtUtils: JwtUtils
+    private val jwtUtils: JwtUtils,
+    private val repository: UserRepository,
 ) {
     companion object {
         const val PROFILE = "https://picpac.kr/common/img/default_profile.png"
@@ -32,8 +32,8 @@ class AuthService(
         return createJwtToken(result)
     }
 
-    fun register(dto: UserRegisterDto, userId: String): String {
-        if (!repository.existsById(userId)) {
+    fun register(dto: UserRegisterDto, userId: String?): String {
+        if (!repository.existsById(userId!!)) {
             throw IllegalArgumentException("이미 로그인이 되어 있습니다.")
         }
 
