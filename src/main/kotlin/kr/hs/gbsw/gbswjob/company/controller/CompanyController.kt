@@ -18,10 +18,10 @@ class CompanyController(
     private val companyService: CompanyService
 ) {
     //회사 등록
-    @PostMapping
-    fun createCompany(@RequestBody dto: CreateCompanyDto): Company {
-        return companyService.create(dto)
-    }
+//    @PostMapping
+//    fun createCompany(@RequestBody dto: CreateCompanyDto): Company {
+//        return companyService.create(dto)
+//    }
 
     //회사 목록 조회
     @GetMapping
