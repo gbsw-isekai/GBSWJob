@@ -19,9 +19,9 @@ class AuthController(
     @PostMapping("/join")
     fun register(
         @RequestBody dto: UserRegisterDto,
-        @AuthUserId userId: String
+        @AuthUserId userId: String?
     ): String {
-        return service.register(dto, userId)
+        return service.register(dto, userId!!)
     }
     @PostMapping("/login")
     fun login(@RequestBody dto: LoginDto): String {
