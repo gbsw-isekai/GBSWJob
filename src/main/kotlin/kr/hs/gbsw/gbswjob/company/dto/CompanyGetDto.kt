@@ -1,17 +1,17 @@
 package kr.hs.gbsw.gbswjob.company.dto
 
-import kr.hs.gbsw.gbswjob.company.domain.CompanyComment
-import kr.hs.gbsw.gbswjob.company.domain.CompanyReview
+import kr.hs.gbsw.gbswjob.company.domain.CompanyNpsEmployeeData
 
 class CompanyGetDto(
-    var id: Int?,
-    var name: String,
-    var stack: String,
-    var grade: Double,
-    var averageSalary: Int,
-    var comments: MutableList<CompanyComment>?,
-    var reviews: MutableList<CompanyReview>?,
-    var viewsCount: Long
+    var id: Int, //회사
+    var name: String, //회사 명
+    var postalCode: String, //우편번호
+    var address: String, //주소
+    var industryCode: Int, //업종코드
+    var industry: String, //업종명
+    var registrationNumber: Long, //사업자 등록번호
+    var viewCount: Long //조회수
+//    var companyNpsEmployeeData: MutableList<CompanyNpsEmployeeData>?
 ) {
 }
 
