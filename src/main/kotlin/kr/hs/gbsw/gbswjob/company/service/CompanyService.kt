@@ -3,7 +3,7 @@ package kr.hs.gbsw.gbswjob.company.service
 import kr.hs.gbsw.gbswjob.company.domain.Company
 import kr.hs.gbsw.gbswjob.company.domain.CompanyView
 import kr.hs.gbsw.gbswjob.company.dto.CompanyGetDto
-import kr.hs.gbsw.gbswjob.company.dto.CreateCompanyDto
+import kr.hs.gbsw.gbswjob.company.repository.CompanyNpsEmployeeDataRepository
 import kr.hs.gbsw.gbswjob.company.repository.CompanyRepository
 import kr.hs.gbsw.gbswjob.company.repository.CompanyViewsRepository
 import kr.hs.gbsw.gbswjob.user.repository.UserRepository
@@ -14,33 +14,37 @@ import kotlin.IllegalArgumentException
 class CompanyService(
     private val companyRepository: CompanyRepository,
     private val companyViews: CompanyViewsRepository,
-    private val repository: UserRepository
+    private val repository: UserRepository,
+    private val companyNpsEmployeeDataRepository: CompanyNpsEmployeeDataRepository
 ) {
-    fun create(dto: CreateCompanyDto): Company {
-        val company = Company(
-            null,
-            dto.name,
-            dto.stack,
-            dto.averageSalary,
-            null,
-            null,
-            null,
-            0
-        )
-
-        return companyRepository.save(company)
-    }
+//    fun create(dto: CreateCompanyDto): Company {
+//        val company = Company(
+//            null,
+//            dto.name,
+//            dto.stack,
+//            dto.genre,
+//            dto.area,
+//            dto.averageSalary,
+//            null,
+//            null,
+//            null,
+//            0
+//        )
+//
+//        return companyRepository.save(company)
+//    }
     fun getCompanies(): List<CompanyGetDto> {
         val company = companyRepository.findAll().map {
             CompanyGetDto(
                 it.id,
                 it.name,
-                it.stack,
-                it.calculateAverageRating(),
-                it.averageSalary,
-                it.comments,
-                it.reviews,
+                it.postalCode,
+                it.address,
+                it.industryCode,
+                it.industry,
+                it.registrationNumber,
                 it.viewCount
+//                it.companyNpsEmployeeData
             )
         }
         return company;
