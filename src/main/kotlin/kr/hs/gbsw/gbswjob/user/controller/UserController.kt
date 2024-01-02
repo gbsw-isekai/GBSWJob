@@ -19,19 +19,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/users")
 class UserController(
     private val service: UserService,
-    private val repository: UserRepository
 ) {
-    // 회원 가입
-    @PostMapping("/join")
-    fun register(
-        @RequestBody dto: UserRegisterDto,
-        @AuthUserId userId: String?
-    ): User {
-        if (!repository.existsById(userId.toString())) {
-            throw IllegalArgumentException("이미 로그인이 되어 있습니다.")
-        }
-        return service.register(dto)
-    }
 //개인 프로필
     @GetMapping("/me")
     fun getMyAccount(@AuthUserId userId: String): User {
