@@ -13,6 +13,8 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
@@ -27,6 +29,7 @@ import java.util.*
 
 @Configuration
 @EnableWebSecurity
+//@EnableMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 class SecurityConfig(
 //    val accessDeniedHandler: CustomAccessDeniedHandler,
 //    val unauthorizedHandler: JwtAuthenticationEntryPoint,
@@ -68,30 +71,31 @@ class SecurityConfig(
         }
 
         http.authorizeHttpRequests {
-//            it.requestMatchers(
-//                "/",
-//                "/favicon.ico",
-//                "/**/*.png",
-//                "/**/*.gif",
-//                "/**/*.svg",
-//                "/**/*.jpg",
-//                "/**/*.html",
-//                "/**/*.css",
-//                "/**/*.js"
-//            ).permitAll()
-//
-//            it.requestMatchers(
-//                    "/auth/*",
-//                    "/users",
-//                    "/application/healthcheck",
-//                    "/to/*",
-//            ).permitAll()
+            //정적 리소스 권한 설정
+            it.requestMatchers(
+                "/",
+                "/favicon.ico",
+                "/css/**",
+                "/html/**",
+                "/js/**",
+                "/images/**",
+                "/webjars/**",
+                "/png/**",
+                "/jpg/**"
+            ).permitAll()
+            //일부 URL 패턴에 대한 권한 설정
+            it.requestMatchers(
+                "/auth/*",
+                "/users/*",
+                "/boards/*",
+                "/companies/**"
+            ).permitAll()
 
-//            it.requestMatchers(HttpMethod.OPTIONS, "/**/*")
-//                    .permitAll()
+            it.requestMatchers(HttpMethod.OPTIONS, "/**/*")
+                    .permitAll()
 
             it.anyRequest()
-                    .permitAll()
+                    .authenticated()
         }
 
         authProviders?.forEach {

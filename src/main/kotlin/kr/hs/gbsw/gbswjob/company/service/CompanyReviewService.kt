@@ -69,7 +69,7 @@ class CompanyReviewService (
         return companyReviewRepository.save(updateReview)
     }
 
-    fun delete(userId: String, reviewId: Int) {
+    fun delete(userId: String, reviewId: Int): String {
         val user = userRepository.findById(userId).orElseThrow {
             IllegalArgumentException("유저를 찾을 수 없습니다")
         }
@@ -83,5 +83,7 @@ class CompanyReviewService (
         }
 
         companyReviewRepository.deleteById(reviewId)
+
+        return "삭제되었습니다."
     }
 }
