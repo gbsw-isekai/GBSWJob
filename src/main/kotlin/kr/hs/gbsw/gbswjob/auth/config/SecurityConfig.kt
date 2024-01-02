@@ -86,8 +86,8 @@ class SecurityConfig(
             //일부 URL 패턴에 대한 권한 설정
             it.requestMatchers(
                 "/auth/*",
-                "/users/*",
-                "/boards/*",
+                "/users/**",
+                "/boards/**",
                 "/companies/**"
             ).permitAll()
 
