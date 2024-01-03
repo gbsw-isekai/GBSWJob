@@ -33,9 +33,11 @@ class CompanyService(
 //
 //        return companyRepository.save(company)
 //    }
-    fun getCompanies(): List<CompanyGetDto> {
-        val company = companyRepository.findAll().map {
-            CompanyGetDto(
+    fun getCompanies(pageId: Int): Page<CompanyListGetDto> {
+
+        val pageable = PageRequest.of(pageId, 10, Sort.by(Sort.Direction.DESC, "viewCount"))
+        val company = companyRepository.findAll(pageable).map {
+            CompanyListGetDto(
                 it.id,
                 it.name,
                 it.postalCode,
@@ -54,6 +56,24 @@ class CompanyService(
         val company = companyRepository.findById(companyId).orElseThrow {
             IllegalArgumentException("회사가 존재하지 않습니다")
         }
+
+        var averageYearPrice = 0L;
+
+        val companyNps = companyNpsEmployeeDataRepository.findAllByCompanyId(companyId).map {
+            averageYearPrice = (it.monthlyPrice.toInt() / 0.09 / it.total.toInt()).roundToLong()
+        }
+
+        return CompanyGetDto(
+            company.id,
+            company.name,
+            company.postalCode,
+            company.address,
+            company.industryCode,
+            company.industry,
+            company.registrationNumber,
+            company.viewCount,
+            averageYearPrice
+        )
     }
 
     fun countUp(companyId: Int, userId: String?): String {
