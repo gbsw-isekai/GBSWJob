@@ -28,9 +28,10 @@ class CompanyController(
     //회사 목록 조회
     @GetMapping("/pages/{pageId}")
     fun getCompanies(
-        @PathVariable pageId: Int
+        @PathVariable pageId: Int,
+        @RequestBody searchKey: String?
     ): Page<CompanyListGetDto> {
-        return companyService.getCompanies(pageId)
+        return companyService.getCompanies(pageId, searchKey)
     }
 
     //회사 일괄 조회
