@@ -51,6 +51,11 @@ class BoardController(
         return service.delete(userId, id);
     }
 
+    @GetMapping("/{boardId}/likes/me")
+    fun getLikeMeByBoard(@AuthUserId userId: String?, @PathVariable("boardId") boardId: Int): Boolean {
+        return service.getIsLikeByBoard(userId, boardId);
+    }
+
     @PostMapping("/{boardId}/likes/me")
     fun createLike(@AuthUserId userId: String, @PathVariable("boardId") boardId: Int): BoardLike {
         return service.createLike(userId, boardId)

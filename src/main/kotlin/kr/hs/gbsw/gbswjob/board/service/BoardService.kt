@@ -211,4 +211,19 @@ class BoardService(
     fun getQuestions(): List<BoardQuestionProjection> {
         return repository.findByQuestionIdIsNull();
     }
+
+    fun getIsLikeByBoard(userId: String?, boardId: Int): Boolean {
+
+        if (userId == null) return false;
+
+        val user = userRepository.findById(userId).orElseThrow {
+            IllegalArgumentException("존재하지 않는 사용자 입니다.")
+        }
+
+        val board = repository.findById(boardId).orElseThrow {
+            IllegalArgumentException("존재하지 않는 게시글 입니다.")
+        }
+
+        return likeRepository.existsByUserAndBoard(user, board);
+    }
 }
