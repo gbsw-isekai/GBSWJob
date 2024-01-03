@@ -3,8 +3,10 @@ package kr.hs.gbsw.gbswjob.company.controller
 import kr.hs.gbsw.gbswjob.common.AuthUserId
 import kr.hs.gbsw.gbswjob.company.domain.Company
 import kr.hs.gbsw.gbswjob.company.dto.CompanyGetDto
-import kr.hs.gbsw.gbswjob.company.dto.CreateCompanyDto
+import kr.hs.gbsw.gbswjob.company.dto.CompanyListGetDto
 import kr.hs.gbsw.gbswjob.company.service.CompanyService
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -24,14 +26,17 @@ class CompanyController(
 //    }
 
     //회사 목록 조회
-    @GetMapping
-    fun getCompanies(): List<CompanyGetDto> {
-        return companyService.getCompanies()
+    @GetMapping("/pages/{pageId}")
+    fun getCompanies(
+        @PathVariable pageId: Int,
+        @RequestBody searchKey: String?
+    ): Page<CompanyListGetDto> {
+        return companyService.getCompanies(pageId, searchKey)
     }
 
     //회사 일괄 조회
     @GetMapping("/{companyId}")
-    fun getCompany(@PathVariable companyId: Int): Company {
+    fun getCompany(@PathVariable companyId: Int): CompanyGetDto {
         return companyService.getCompany(companyId)
     }
 

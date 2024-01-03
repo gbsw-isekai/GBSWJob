@@ -18,7 +18,7 @@ class Company(
     var industryCode: Int, //업종코드
     var industry: String, //업종명
     var registrationNumber: Long, //사업자 등록번호
-    var viewCount: Long,
+    var viewCount: Long, //조회수
 
     @OneToMany(mappedBy = "company")
     var companyNpsEmployeeData: MutableList<CompanyNpsEmployeeData>?,

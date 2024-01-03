@@ -91,7 +91,7 @@ class SecurityConfig(
                 "/companies/**"
             ).permitAll()
 
-            it.requestMatchers(HttpMethod.OPTIONS, "/**")
+            it.requestMatchers(HttpMethod.OPTIONS, "/**/*")
                     .permitAll()
 
             it.anyRequest()
