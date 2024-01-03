@@ -1,6 +1,8 @@
 package kr.hs.gbsw.gbswjob.company.dto
 
-import kr.hs.gbsw.gbswjob.company.domain.CompanyNpsEmployeeData
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
 
 class CompanyGetDto(
     var id: Int, //회사
@@ -10,14 +12,20 @@ class CompanyGetDto(
     var industryCode: Int, //업종코드
     var industry: String, //업종명
     var registrationNumber: Long, //사업자 등록번호
-    var viewCount: Long //조회수
-//    var companyNpsEmployeeData: MutableList<CompanyNpsEmployeeData>?
+    var viewCount: Long,
+    var averageYearPrice: Long, //1년간 총 월급평균
+
+//    var januaryPrice: Long,
+//    var februaryPrice: Long,
+//    var marchPrice: Long,
+//    var aprilPrice: Long,
+//    var mayPrice: Long,
+//    var junePrice: Long,
+//    var julyPrice: Long,
+//    var septemberPrice: Long,
+//    var octoberPrice: Long,
+//    var novemberPrice: Long,
+//    var decemberPrice: Long,
+
 ) {
 }
-
-//class 붕어빵(
-//    var 반죽: 반죽,
-//    var 소: 소
-//)
-//
-//var 붕어빵 인스턴스 = new 붕어빵(밀가루반죽, 팥소)
