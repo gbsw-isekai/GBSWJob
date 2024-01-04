@@ -6,8 +6,14 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
+import org.hibernate.annotations.Where
 
 @Entity
+@Where(clause = """
+    industry like '%정보%' or
+    industry like '%소프트웨어%' or
+    industry like '%통신%'
+""")
 class Company(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +26,9 @@ class Company(
     var registrationNumber: Long, //사업자 등록번호
     var viewCount: Long, //조회수
 
+    var latestEmployeeCount: Long?, // 최신 직원수
+    var latestAverageSalary: Long?, // 최신 평균 월급
+
     @OneToMany(mappedBy = "company")
     var companyNpsEmployeeData: MutableList<CompanyNpsEmployeeData>?,
     @OneToMany(mappedBy = "company")
@@ -30,15 +39,4 @@ class Company(
     @OneToMany(mappedBy = "company")
     var views: MutableList<CompanyView>?
 ) {
-//    fun calculateAverageRating(): Double {
-//        if (reviews.isNullOrEmpty()) {
-//            return 0.0
-//        }
-//
-//        val ratingSum = reviews?.sumOf {
-//            it.calculateAverageRating()
-//        } ?: 0.0
-//
-//        return ratingSum / reviews!!.size
-//    }
 }

@@ -3,6 +3,8 @@ package kr.hs.gbsw.gbswjob.company.dto
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import kr.hs.gbsw.gbswjob.company.domain.CompanyNpsEmployeeData
+import kr.hs.gbsw.gbswjob.company.domain.CompanyReview
 
 class CompanyGetDto(
     var id: Int, //회사
@@ -13,7 +15,10 @@ class CompanyGetDto(
     var industry: String, //업종명
     var registrationNumber: Long, //사업자 등록번호
     var viewCount: Long,
-    var averageYearPrice: Long, //1년간 총 월급평균
+    var employeeCount: Long?,
+    var averageYearPrice: Long?, //1년간 총 월급평균,
+    var companyNpsEmployeeData: MutableList<CompanyNpsEmployeeData>?,
+    var reviews: MutableList<CompanyReview>?,
 
 //    var januaryPrice: Long,
 //    var februaryPrice: Long,

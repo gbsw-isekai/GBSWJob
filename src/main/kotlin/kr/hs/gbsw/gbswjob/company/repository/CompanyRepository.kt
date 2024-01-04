@@ -6,5 +6,5 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface CompanyRepository: JpaRepository<Company, Int> {
-    fun findAllByName(pageable: Pageable, searchId: String): Page<Company>
+    fun findByNameContaining(query: String, pageable: Pageable): Page<Company>
 }

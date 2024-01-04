@@ -3,6 +3,7 @@ package kr.hs.gbsw.gbswjob.company.domain
 import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import kr.hs.gbsw.gbswjob.user.domain.User
+import java.time.LocalDateTime
 
 @Entity
 class CompanyReview(
@@ -26,7 +27,10 @@ class CompanyReview(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    var user: User
+    var user: User,
+
+    var createdAt: LocalDateTime,
+    var updatedAt: LocalDateTime
 ) {
     fun calculateAverageRating(): Double {
         var grade = 0.0

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -29,7 +30,7 @@ class CompanyReviewController(
     fun create(
         @AuthUserId userId: String,
         @PathVariable companyId: Int,
-        dto: ReviewCreateDto
+        @RequestBody dto: ReviewCreateDto
     ): CompanyReview {
         return companyReviewService.create(userId, companyId, dto)
     }
@@ -38,7 +39,7 @@ class CompanyReviewController(
     fun update(
         @AuthUserId userId: String,
         @PathVariable reviewId: Int,
-        dto: ReviewUpdateDto
+        @RequestBody dto: ReviewUpdateDto
     ): CompanyReview {
         return companyReviewService.update(userId, reviewId, dto)
     }
