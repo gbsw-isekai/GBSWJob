@@ -7,6 +7,7 @@ import kr.hs.gbsw.gbswjob.company.repository.CompanyRepository
 import kr.hs.gbsw.gbswjob.company.repository.CompanyReviewRepository
 import kr.hs.gbsw.gbswjob.user.repository.UserRepository
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 @Service
 class CompanyReviewService (
@@ -31,6 +32,7 @@ class CompanyReviewService (
             IllegalArgumentException("회사를 찾을 수 없습니다.")
         }
 
+        val now = LocalDateTime.now()
         val companyReview = CompanyReview(
             null,
             dto.title,
@@ -41,7 +43,9 @@ class CompanyReviewService (
             dto.workloadRating,
             dto.transportationRating,
             company,
-            user
+            user,
+            now,
+            now
         )
 
         return companyReviewRepository.save(companyReview)

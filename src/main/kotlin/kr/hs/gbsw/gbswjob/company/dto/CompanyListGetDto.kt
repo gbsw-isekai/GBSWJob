@@ -8,7 +8,9 @@ class CompanyListGetDto(
     var industryCode: Int, //업종코드
     var industry: String, //업종명
     var registrationNumber: Long, //사업자 등록번호
-    var viewCount: Long //조회수
+    var viewCount: Long, //조회수
+    var employeeCount: Long?,
+    var averageYearPrice: Long?, //
 //    var companyNpsEmployeeData: MutableList<CompanyNpsEmployeeData>?
 ) {
 }

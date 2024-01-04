@@ -3,6 +3,7 @@ package kr.hs.gbsw.gbswjob.company.controller
 import kr.hs.gbsw.gbswjob.common.AuthUserId
 import kr.hs.gbsw.gbswjob.company.dto.CompanyGetDto
 import kr.hs.gbsw.gbswjob.company.dto.CompanyListGetDto
+import kr.hs.gbsw.gbswjob.company.dto.CompanyPriceGetDto
 import kr.hs.gbsw.gbswjob.company.service.CompanyService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -40,9 +41,15 @@ class CompanyController(
     fun getCompany(@PathVariable companyId: Int): CompanyGetDto {
         return companyService.getCompany(companyId)
     }
+    
+    //회사 월별 금액 추가
+    @GetMapping("/{companyId}/price")
+    fun getCompanyPrice(@PathVariable companyId: Int): List<CompanyPriceGetDto> {
+        return companyService.getCompanyPrice(companyId)
+    }
 
     //회사 조회수 추가
-    @PostMapping("/{companyId}/views")
+    @PostMapping("/{companyId}")
     fun countUp(
         @PathVariable companyId: Int,
         @AuthUserId userId: String?,

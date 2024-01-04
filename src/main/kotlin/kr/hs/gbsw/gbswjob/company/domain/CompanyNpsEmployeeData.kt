@@ -1,5 +1,6 @@
 package kr.hs.gbsw.gbswjob.company.domain
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 
 @Entity
@@ -16,6 +17,7 @@ class CompanyNpsEmployeeData(
     var total: Int, //총 직원수
     var monthlyPrice: Long, //국민 연금 보험료 / 0.09 /총 직원수 = 평균 월 급
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
     var company: Company

@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.filter.OncePerRequestFilter
@@ -36,9 +37,12 @@ class JwtAuthenticationFilter(
 
                 // JWT 파싱해서 검증하고 사용자 아이디 가져오기
                 val userId = jwtUtils.getUserId(bearerToken)
+                val authorities = jwtUtils.getRoles(bearerToken).map {
+                    SimpleGrantedAuthority(it)
+                }
 
                 SecurityContextHolder.getContext().authentication = UsernamePasswordAuthenticationToken(
-                    userId, bearerToken
+                    userId, bearerToken, authorities
                 )
             }
         } catch (e: Exception) {

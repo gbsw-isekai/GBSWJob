@@ -3,6 +3,7 @@ package kr.hs.gbsw.gbswjob.company.service
 import kr.hs.gbsw.gbswjob.company.domain.CompanyView
 import kr.hs.gbsw.gbswjob.company.dto.CompanyGetDto
 import kr.hs.gbsw.gbswjob.company.dto.CompanyListGetDto
+import kr.hs.gbsw.gbswjob.company.dto.CompanyPriceGetDto
 import kr.hs.gbsw.gbswjob.company.repository.CompanyNpsEmployeeDataRepository
 import kr.hs.gbsw.gbswjob.company.repository.CompanyRepository
 import kr.hs.gbsw.gbswjob.company.repository.CompanyViewsRepository
@@ -12,6 +13,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import kotlin.IllegalArgumentException
 import kotlin.math.roundToLong
 
@@ -22,26 +24,11 @@ class CompanyService(
     private val repository: UserRepository,
     private val companyNpsEmployeeDataRepository: CompanyNpsEmployeeDataRepository
 ) {
-    //    fun create(dto: CreateCompanyDto): Company {
-//        val company = Company(
-//            null,
-//            dto.name,
-//            dto.stack,
-//            dto.genre,
-//            dto.area,
-//            dto.averageSalary,
-//            null,
-//            null,
-//            null,
-//            0
-//        )
-//
-//        return companyRepository.save(company)
-//    }
     fun getCompanies(
         query: String?,
         pageable: Pageable
     ): Page<CompanyListGetDto> {
+        var averageYearPrice = 0L;
         if (query != null) {
             return companyRepository.findByNameContaining(query ?: "", pageable).map {
                 CompanyListGetDto(
@@ -52,7 +39,9 @@ class CompanyService(
                     it.industryCode,
                     it.industry,
                     it.registrationNumber,
-                    it.viewCount
+                    it.viewCount,
+                    it.latestEmployeeCount,
+                    it.latestAverageSalary
                 )
             }
         } else {
@@ -65,22 +54,23 @@ class CompanyService(
                     it.industryCode,
                     it.industry,
                     it.registrationNumber,
-                    it.viewCount
+                    it.viewCount,
+                    it.latestEmployeeCount,
+                    it.latestAverageSalary
                 )
             }
         }
     }
 
+    @Transactional(readOnly = true)
     fun getCompany(companyId: Int): CompanyGetDto {
         val company = companyRepository.findById(companyId).orElseThrow {
             IllegalArgumentException("회사가 존재하지 않습니다")
         }
 
-        var averageYearPrice = 0L;
-
-        companyNpsEmployeeDataRepository.findAllByCompanyId(companyId).map {
-            averageYearPrice = (it.monthlyPrice.toInt() / 0.09 / it.total.toInt()).roundToLong()
-        }
+//        val latestNpsData = company.companyNpsEmployeeData?.maxByOrNull { it.year * 10 + it.month }
+//        val latestEmployeeCount = latestNpsData?.total
+//        val averageYearPrice = (latestNpsData?.monthlyPrice?.div(0.09)?.div(latestEmployeeCount ?: 1));
 
         return CompanyGetDto(
             company.id,
@@ -91,8 +81,24 @@ class CompanyService(
             company.industry,
             company.registrationNumber,
             company.viewCount,
-            averageYearPrice
+            company.latestEmployeeCount,
+            company.latestAverageSalary,
+            company.companyNpsEmployeeData,
+            company.reviews
         )
+    }
+
+    fun getCompanyPrice(companyId: Int): List<CompanyPriceGetDto> {
+        companyRepository.findById(companyId).orElseThrow {
+            IllegalArgumentException("회사가 존재하지 않습니다.")
+        }
+
+        return companyNpsEmployeeDataRepository.findAllByCompanyId(companyId).map {
+            CompanyPriceGetDto(
+                it.month.toString(),
+                (it.monthlyPrice.toInt() / 0.09 / it.total).toString()
+            )
+        }
     }
 
     fun countUp(companyId: Int, userId: String?): String {
