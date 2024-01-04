@@ -33,7 +33,7 @@ class AuthService(
     }
 
     fun register(dto: UserRegisterDto, userId: String?): String {
-        if (!repository.existsById(userId!!)) {
+        if (userId != null && !repository.existsById(userId)) {
             throw IllegalArgumentException("이미 로그인이 되어 있습니다.")
         }
 
@@ -60,7 +60,7 @@ class AuthService(
 
         repository.save(user)
 
-        val result = authenticationManager.authenticate(IdPwAuthentication(user.id, user.pw, emptyList()))
+        val result = authenticationManager.authenticate(IdPwAuthentication(dto.id, dto.pw, emptyList()))
 
         return createJwtToken(result)
     }
