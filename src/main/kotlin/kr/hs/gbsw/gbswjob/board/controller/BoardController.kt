@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -27,8 +28,8 @@ class BoardController(
     }
 
     @GetMapping("/questions")
-    fun getQuestions(): List<BoardQuestionProjection> {
-        return service.getQuestions();
+    fun getQuestions(@RequestParam("order") orderType: String?): List<BoardQuestionProjection> {
+        return service.getQuestions(orderType);
     }
 
     @GetMapping("/{id}")

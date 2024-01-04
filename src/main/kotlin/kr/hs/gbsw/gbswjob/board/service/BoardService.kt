@@ -13,6 +13,7 @@ import kr.hs.gbsw.gbswjob.user.domain.User
 import kr.hs.gbsw.gbswjob.user.repository.UserRepository
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
+import java.util.*
 
 @Service
 class BoardService(
@@ -53,6 +54,7 @@ class BoardService(
                 dto.content,
                 user,
                 null,
+                0,
                 question,
                 null,
                 null,
@@ -63,6 +65,9 @@ class BoardService(
         )
 
         repository.save(answer)
+
+        question.answersSize = question.answers?.size ?: 0
+
         repository.save(question)
 
         return answer
@@ -75,6 +80,7 @@ class BoardService(
                 dto.content,
                 user,
                 null,
+                0,
                 null,
                 null,
                 null,
@@ -129,11 +135,23 @@ class BoardService(
             IllegalArgumentException("존재하지 않는 게시글 입니다.")
         }
 
-        if(board.writer != user) {
+        if (board.writer != user) {
             throw IllegalStateException("자신의 글만 삭제할 수 있습니다.")
         }
 
+        var question: Board? = null
+
+        if (board.isAnswer()) {
+            question = repository.findById(board.question!!.id!!).get();
+        }
+
         repository.delete(board)
+
+        if (question != null) {
+            question.answersSize = question.answers?.size ?: 0
+
+            repository.save(question)
+        }
 
         return
     }
@@ -208,7 +226,16 @@ class BoardService(
 
     }
 
-    fun getQuestions(): List<BoardQuestionProjection> {
+    fun getQuestions(orderType: String?): List<BoardQuestionProjection> {
+
+        if (orderType.equals("latest")) {
+            return repository.findByQuestionIdIsNullOrderByCreatedAtDesc();
+        } else if (orderType.equals("answers")) {
+            return repository.findByQuestionIdIsNullOrderByAnswersSizeDesc();
+        } else if (orderType.equals("views")) {
+            return repository.findByQuestionIdIsNullOrderByViewCountDesc();
+        }
+
         return repository.findByQuestionIdIsNull();
     }
 
