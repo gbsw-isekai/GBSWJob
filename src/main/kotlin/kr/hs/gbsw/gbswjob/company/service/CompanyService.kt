@@ -1,6 +1,5 @@
 package kr.hs.gbsw.gbswjob.company.service
 
-import kr.hs.gbsw.gbswjob.company.domain.Company
 import kr.hs.gbsw.gbswjob.company.domain.CompanyView
 import kr.hs.gbsw.gbswjob.company.dto.CompanyGetDto
 import kr.hs.gbsw.gbswjob.company.dto.CompanyListGetDto
@@ -14,7 +13,6 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import kotlin.IllegalArgumentException
-import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
 @Service
@@ -24,7 +22,7 @@ class CompanyService(
     private val repository: UserRepository,
     private val companyNpsEmployeeDataRepository: CompanyNpsEmployeeDataRepository
 ) {
-//    fun create(dto: CreateCompanyDto): Company {
+    //    fun create(dto: CreateCompanyDto): Company {
 //        val company = Company(
 //            null,
 //            dto.name,
@@ -40,11 +38,12 @@ class CompanyService(
 //
 //        return companyRepository.save(company)
 //    }
-    fun getCompanies(pageId: Int, searchId: String?): Page<CompanyListGetDto> {
-        val pageable = PageRequest.of(pageId, 10, Sort.by(Sort.Direction.DESC, "viewCount"))
-
-        if(searchId == null) {
-            return companyRepository.findAll(pageable).map {
+    fun getCompanies(
+        query: String?,
+        pageable: Pageable
+    ): Page<CompanyListGetDto> {
+        if (query != null) {
+            return companyRepository.findByNameContaining(query ?: "", pageable).map {
                 CompanyListGetDto(
                     it.id,
                     it.name,
@@ -57,7 +56,7 @@ class CompanyService(
                 )
             }
         } else {
-            return companyRepository.findAllByName(pageable, searchId).map {
+            return companyRepository.findAll(pageable).map {
                 CompanyListGetDto(
                     it.id,
                     it.name,
