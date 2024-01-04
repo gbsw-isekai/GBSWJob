@@ -17,4 +17,5 @@ class BoardLike(
         @JsonIgnore
         var board: Board,
 ) {
+
 }

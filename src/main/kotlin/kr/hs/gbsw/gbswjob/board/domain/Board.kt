@@ -3,7 +3,6 @@ package kr.hs.gbsw.gbswjob.board.domain
 import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import kr.hs.gbsw.gbswjob.user.domain.User
-import org.hibernate.annotations.Cascade
 import java.time.LocalDateTime
 
 @Entity
@@ -19,6 +18,7 @@ class Board(
         var writer: User,      // 다대1
         @OneToMany(mappedBy = "question", cascade = [CascadeType.REMOVE])
         var answers: MutableList<Board>?,
+        var answersSize: Int,
         @JsonIgnore
         @ManyToOne(fetch = FetchType.LAZY)
         var question: Board?,
