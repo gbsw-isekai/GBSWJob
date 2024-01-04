@@ -1,6 +1,7 @@
 package kr.hs.gbsw.gbswjob.company.dto
 
 class ReviewUpdateDto(
+    var id: Int,
     var title: String,
     var pro: String,
     var con: String,
