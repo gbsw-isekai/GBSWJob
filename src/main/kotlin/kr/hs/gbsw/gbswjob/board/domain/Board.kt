@@ -6,7 +6,7 @@ import kr.hs.gbsw.gbswjob.user.domain.User
 import java.time.LocalDateTime
 
 @Entity
-class Board(
+open class Board(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         var id: Int?,
@@ -16,7 +16,7 @@ class Board(
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "writer_id")
         var writer: User,      // 다대1
-        @OneToMany(mappedBy = "question", cascade = [CascadeType.REMOVE])
+        @OneToMany(mappedBy = "question", cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE])
         var answers: MutableList<Board>?,
         var answersSize: Int,
         @JsonIgnore
@@ -32,6 +32,26 @@ class Board(
         var createdAt: LocalDateTime,
         var updatedAt: LocalDateTime
 ) {
+    companion object {
+        fun of(content: String, user: User, question: Board): Board {
+            return Board(
+                null,
+                null,
+                content,
+                user,
+                null,
+                0,
+                question,
+                null,
+                null,
+                null,
+                0,
+                LocalDateTime.now(),
+                LocalDateTime.now()
+            )
+        }
+    }
+
     fun isAnswer(): Boolean {
         return question != null
     }

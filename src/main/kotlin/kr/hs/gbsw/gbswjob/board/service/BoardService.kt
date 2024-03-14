@@ -1,16 +1,21 @@
 package kr.hs.gbsw.gbswjob.board.service
 
+import jakarta.persistence.EntityNotFoundException
 import kr.hs.gbsw.gbswjob.board.domain.Board
 import kr.hs.gbsw.gbswjob.board.domain.BoardLike
 import kr.hs.gbsw.gbswjob.board.domain.BoardView
+import kr.hs.gbsw.gbswjob.board.domain.Question
 import kr.hs.gbsw.gbswjob.board.dto.BoardCreateDto
 import kr.hs.gbsw.gbswjob.board.projection.BoardQuestionProjection
 import kr.hs.gbsw.gbswjob.board.dto.BoardUpdateDto
 import kr.hs.gbsw.gbswjob.board.repository.BoardLikeRepository
 import kr.hs.gbsw.gbswjob.board.repository.BoardRepository
 import kr.hs.gbsw.gbswjob.board.repository.BoardViewRepository
+import kr.hs.gbsw.gbswjob.board.repository.QuestionRepository
 import kr.hs.gbsw.gbswjob.user.domain.User
 import kr.hs.gbsw.gbswjob.user.repository.UserRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.*
@@ -18,6 +23,7 @@ import java.util.*
 @Service
 class BoardService(
         private val repository: BoardRepository,
+        private val questionRepository: QuestionRepository,
         private val userRepository: UserRepository,
         private val likeRepository: BoardLikeRepository,
         private val viewRepository: BoardViewRepository
@@ -31,7 +37,7 @@ class BoardService(
 
     fun getById(id: Int): Board {
         val board = repository.findById(id).orElseThrow {
-            IllegalArgumentException("존재하지 않는 게시글 입니다.")
+            EntityNotFoundException("존재하지 않는 게시글 입니다.")
         }
 
         return board
@@ -40,35 +46,22 @@ class BoardService(
     fun createAnswer(user: User, dto: BoardCreateDto): Board {
         // 1. 질문글을 불러온다.
         val question = repository.findById(dto.questionId!!).orElseThrow {
-            IllegalArgumentException("존재하지 않는 게시글 입니다.")
+            EntityNotFoundException("존재하지 않는 게시글 입니다.")
         }
 
-        if (question.isAnswer()) {
-            throw IllegalStateException("답변 글에 답변을 추가할 수 없습니다.")
+        check (!question.isAnswer()) {
+            "답변 글에 답변을 추가할 수 없습니다."
         }
 
         // 2. 답변글을 저장한다.
-        val answer = Board(
-                null,
-                null,
-                dto.content,
-                user,
-                null,
-                0,
-                question,
-                null,
-                null,
-                null,
-                0,
-                LocalDateTime.now(),
-                LocalDateTime.now()
-        )
+        val answer = Board.of(dto.content, user, question)
 
-        repository.save(answer)
-
+        // 질문 인스턴스의 답변 목록에 새로 만든 답변 인스턴스를 추가해야겠지?
+        question.answers?.add(answer)
         question.answersSize = question.answers?.size ?: 0
-
         repository.save(question)
+
+        repository.delete(question)
 
         return answer
     }
@@ -94,7 +87,7 @@ class BoardService(
 
     fun create(userId: String, dto: BoardCreateDto): Board {
         val user = userRepository.findById(userId).orElseThrow {
-            IllegalArgumentException("존재하지 않는 사용자 입니다.")
+            EntityNotFoundException("존재하지 않는 사용자 입니다.")
         }
 
         // 목표 : 질문 글, 답변 글을 구분해서 등록할 수 있따.
@@ -109,13 +102,13 @@ class BoardService(
     fun update(userId: String, dto: BoardUpdateDto): Board {
 
         val user = userRepository.findById(userId).orElseThrow {
-            IllegalArgumentException("존재하지 않는 사용자 입니다.")
+            EntityNotFoundException("존재하지 않는 사용자 입니다.")
         }
 
         val updatedBoard = repository.findById(dto.id).get()
 
-        if(updatedBoard.writer != user) {
-            throw IllegalStateException("자신의 글만 업데이트할 수 있습니다.")
+        check (updatedBoard.writer == user) {
+            "자신의 글만 업데이트할 수 있습니다."
         }
 
         updatedBoard.title = dto.title
@@ -128,15 +121,15 @@ class BoardService(
     fun delete(userId: String, id: Int) {
 
         val user = userRepository.findById(userId).orElseThrow {
-            IllegalArgumentException("존재하지 않는 사용자 입니다.")
+            EntityNotFoundException("존재하지 않는 사용자 입니다.")
         }
 
         val board = repository.findById(id).orElseThrow {
-            IllegalArgumentException("존재하지 않는 게시글 입니다.")
+            EntityNotFoundException("존재하지 않는 게시글 입니다.")
         }
 
-        if (board.writer != user) {
-            throw IllegalStateException("자신의 글만 삭제할 수 있습니다.")
+        check (board.writer == user) {
+            "자신의 글만 삭제할 수 있습니다."
         }
 
         var question: Board? = null
@@ -226,17 +219,8 @@ class BoardService(
 
     }
 
-    fun getQuestions(orderType: String?): List<BoardQuestionProjection> {
-
-        if (orderType.equals("latest")) {
-            return repository.findByQuestionIdIsNullOrderByCreatedAtDesc();
-        } else if (orderType.equals("answers")) {
-            return repository.findByQuestionIdIsNullOrderByAnswersSizeDesc();
-        } else if (orderType.equals("views")) {
-            return repository.findByQuestionIdIsNullOrderByViewCountDesc();
-        }
-
-        return repository.findByQuestionIdIsNull();
+    fun getQuestions(pageable: Pageable): Page<Question> {
+        return questionRepository.findAll(pageable)
     }
 
     fun getIsLikeByBoard(userId: String?, boardId: Int): Boolean {

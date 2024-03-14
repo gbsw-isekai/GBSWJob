@@ -5,6 +5,7 @@ import kr.hs.gbsw.gbswjob.board.domain.BoardLike
 import kr.hs.gbsw.gbswjob.user.domain.User
 import java.time.LocalDateTime
 
+// DTO : Data Transfer Object
 interface BoardQuestionProjection {
     var id: Int
     var title: String

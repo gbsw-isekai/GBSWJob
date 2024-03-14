@@ -40,6 +40,8 @@ class JwtUtils(
                 .compact()
     }
 
+
+
     // 사용자 아이디 가져 오기
     fun getUserId(token: String): String {
         return parseClaimsJws(token).body.subject

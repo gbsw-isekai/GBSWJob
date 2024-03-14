@@ -28,7 +28,7 @@ class AuthService(
     }
 
     fun login(dto: LoginDto): String {
-        val result = authenticationManager.authenticate(IdPwAuthentication(dto.id, dto.pw, emptyList()))
+        val result = authenticationManager.authenticate(IdPwAuthentication(dto.id, dto.pw))
         return createJwtToken(result)
     }
 
