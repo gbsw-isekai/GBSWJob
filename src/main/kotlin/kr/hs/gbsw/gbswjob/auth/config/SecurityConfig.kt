@@ -88,7 +88,7 @@ class SecurityConfig(
                 "/auth/*",
                 "/users/**",
                 "/boards/**",
-                "/companies/**"
+                "/companies/**",
             ).permitAll()
 
             it.requestMatchers(HttpMethod.OPTIONS, "/**/*")

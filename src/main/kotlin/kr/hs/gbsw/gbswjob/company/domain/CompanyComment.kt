@@ -24,9 +24,6 @@ class CompanyComment(
     @Column(columnDefinition = "TEXT")
     var content: String,
 
-    @OneToMany(mappedBy = "comment")
-    var likes: MutableList<CompanyCommentLike>,
-
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime
 ){

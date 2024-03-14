@@ -6,6 +6,7 @@ import kr.hs.gbsw.gbswjob.company.dto.CommentCreateDto
 import kr.hs.gbsw.gbswjob.company.dto.CommentGetDto
 import kr.hs.gbsw.gbswjob.company.dto.CommentUpdateDto
 import kr.hs.gbsw.gbswjob.company.service.CompanyCommentService
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -45,7 +46,7 @@ class CompanyCommentController (
         @PathVariable("companyId") companyId: Int,
         @PathVariable("id") commentId: Int,
         @RequestBody dto: CommentUpdateDto,
-    ): CompanyComment {
+    ): ResponseEntity<String> {
         return service.update(userId, companyId, commentId, dto)
     }
 

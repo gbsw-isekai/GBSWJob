@@ -15,9 +15,9 @@ class JwtUtils(
 ) {
     fun parseClaimsJws(token: String): Jws<Claims> {
         return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
+            .setSigningKey(key)
+            .build()
+            .parseClaimsJws(token)
     }
 
     fun validate(token: String): Boolean {

@@ -8,6 +8,7 @@ import kr.hs.gbsw.gbswjob.company.repository.CompanyCommentLikeRepository
 import kr.hs.gbsw.gbswjob.company.repository.CompanyCommentRepository
 import kr.hs.gbsw.gbswjob.company.repository.CompanyRepository
 import kr.hs.gbsw.gbswjob.user.repository.UserRepository
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
@@ -28,8 +29,6 @@ class CompanyCommentService(
                 it.id!!,
                 it.writer,
                 it.content,
-                it.likes.size,
-                it.likes.any { like -> like.user.id == userId },
                 it.createdAt,
                 it.updatedAt
             )
@@ -45,22 +44,21 @@ class CompanyCommentService(
         val company = companyRepository.findById(companyId).orElseThrow {
             IllegalArgumentException("존재하지 않는 회사입니다.")
         }
-
-        val like = companyCommentLikeRepository.findAll()
+//
+//        val like = companyCommentLikeRepository.findAll()
 
         val comment = CompanyComment(
             null,
             user,
             company,
             dto.content,
-            like,
             LocalDateTime.now(),
             LocalDateTime.now()
         )
         return companyCommentRepository.save(comment)
     }
 
-    fun update (userId: String, companyId: Int, commentId: Int, dto: CommentUpdateDto): CompanyComment {
+    fun update(userId: String, companyId: Int, commentId: Int, dto: CommentUpdateDto): ResponseEntity<String> {
 
         val user = userRepository.findById(userId).orElseThrow {
             IllegalArgumentException("존재하지 않는 사용자입니다.")
@@ -81,7 +79,9 @@ class CompanyCommentService(
         updateComment.content = dto.content
         updateComment.updatedAt = LocalDateTime.now()
 
-        return companyCommentRepository.save(updateComment)
+        companyCommentRepository.save(updateComment)
+        
+        return ResponseEntity.ok("수정 완료")
     }
 
     fun delete(userId: String, companyId: Int, commentId: Int) {
